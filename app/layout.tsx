@@ -38,8 +38,10 @@ export default async function RootLayout({
             <div className="flex items-center gap-8">
               <nav className="hidden md:flex gap-8 font-mono text-xs uppercase tracking-wider text-bone-dim">
                 <Link href="/" className="hover:text-amber">Inicio</Link>
+                <Link href="/concurso" className="hover:text-amber">Concurso</Link>
                 <Link href="/enviar" className="hover:text-amber">Enviar historia</Link>
                 {user && <Link href="/admin" className="hover:text-amber">Admin</Link>}
+                {user && <Link href="/admin/concurso" className="hover:text-amber">Concurso admin</Link>}
               </nav>
               {user ? (
                 <LogoutButton />

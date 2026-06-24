@@ -1,0 +1,174 @@
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { createClient } from "@/lib/supabase/server";
+
+export const dynamic = "force-dynamic";
+
+async function crearConcurso(formData: FormData) {
+  "use server";
+  const supabase = await createClient();
+  await supabase.from("contests").insert({
+    year: parseInt(formData.get("year") as string),
+    title: formData.get("title") as string,
+    ends_at: formData.get("ends_at") || null,
+    is_active: false,
+  });
+  revalidatePath("/admin/concurso");
+}
+
+async function toggleConcurso(formData: FormData) {
+  "use server";
+  const supabase = await createClient();
+  const id = formData.get("id") as string;
+  const is_active = formData.get("is_active") === "true";
+  await supabase.from("contests").update({ is_active }).eq("id", id);
+  revalidatePath("/admin/concurso");
+}
+
+async function agregarEntrada(formData: FormData) {
+  "use server";
+  const supabase = await createClient();
+  await supabase.from("contest_entries").insert({
+    contest_id: formData.get("contest_id") as string,
+    title: formData.get("title") as string,
+    youtube_url: formData.get("youtube_url") as string,
+    description: formData.get("description") as string || null,
+  });
+  revalidatePath("/admin/concurso");
+}
+
+async function eliminarEntrada(formData: FormData) {
+  "use server";
+  const supabase = await createClient();
+  await supabase.from("contest_entries").delete().eq("id", formData.get("id") as string);
+  revalidatePath("/admin/concurso");
+}
+
+export default async function AdminConcursoPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const { data: profile } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
+  if (!profile?.is_admin) redirect("/");
+
+  const { data: contests } = await supabase
+    .from("contests")
+    .select("*, contest_entries(id, title, youtube_url, description, contest_votes(id))")
+    .order("year", { ascending: false });
+
+  const now = new Date();
+
+  return (
+    <main className="max-w-4xl mx-auto px-8 py-16">
+      <h1 className="font-display text-2xl mb-2">Gestión de concursos</h1>
+      <p className="text-bone-dim text-sm mb-10">Crea concursos anuales, agrega cortos y abre la votación.</p>
+
+      {/* Crear concurso */}
+      <div className="bg-paper border border-border-dark p-6 mb-10">
+        <h2 className="font-display text-lg mb-5">Nuevo concurso</h2>
+        <form action={crearConcurso} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block font-mono text-xs uppercase tracking-wide text-bone-dim mb-2">Año</label>
+            <input name="year" type="number" defaultValue={new Date().getFullYear()} required
+              className="w-full bg-void border border-border-dark rounded px-3 py-2 text-bone font-mono text-sm" />
+          </div>
+          <div>
+            <label className="block font-mono text-xs uppercase tracking-wide text-bone-dim mb-2">Título</label>
+            <input name="title" type="text" required placeholder="Ej: El Corto del Año 2025"
+              className="w-full bg-void border border-border-dark rounded px-3 py-2 text-bone text-sm" />
+          </div>
+          <div>
+            <label className="block font-mono text-xs uppercase tracking-wide text-bone-dim mb-2">Fecha de cierre</label>
+            <input name="ends_at" type="datetime-local"
+              className="w-full bg-void border border-border-dark rounded px-3 py-2 text-bone font-mono text-sm" />
+          </div>
+          <div className="md:col-span-3">
+            <button type="submit"
+              className="font-mono text-xs uppercase tracking-wide border border-amber text-amber rounded px-5 py-2 hover:bg-amber hover:text-void">
+              Crear concurso
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Lista de concursos */}
+      <div className="flex flex-col gap-10">
+        {contests?.map((contest) => {
+          const isOpen = contest.is_active && (!contest.ends_at || new Date(contest.ends_at) > now);
+          const totalVotes = contest.contest_entries?.reduce(
+            (sum: number, e: { contest_votes?: unknown[] }) => sum + (e.contest_votes?.length ?? 0), 0
+          ) ?? 0;
+
+          return (
+            <div key={contest.id} className="border border-border-dark">
+              {/* Header concurso */}
+              <div className="bg-paper p-5 flex items-center justify-between gap-4 border-b border-border-dark">
+                <div>
+                  <span className="font-display text-lg">{contest.title}</span>
+                  <span className="font-mono text-xs text-bone-dim ml-3">{contest.year}</span>
+                  {contest.ends_at && (
+                    <span className="font-mono text-xs text-bone-dim ml-3">
+                      · Cierra {new Date(contest.ends_at).toLocaleDateString("es-MX", { day: "numeric", month: "long" })}
+                    </span>
+                  )}
+                  <span className="font-mono text-xs text-bone-dim ml-3">· {totalVotes} votos totales</span>
+                </div>
+                <form action={toggleConcurso} className="flex items-center gap-2">
+                  <input type="hidden" name="id" value={contest.id} />
+                  <input type="hidden" name="is_active" value={(!contest.is_active).toString()} />
+                  <button type="submit"
+                    className={`font-mono text-xs uppercase tracking-wide rounded px-4 py-2 border ${
+                      isOpen
+                        ? "border-blood text-blood hover:bg-blood hover:text-bone"
+                        : "border-amber text-amber hover:bg-amber hover:text-void"
+                    }`}>
+                    {contest.is_active ? "Cerrar votación" : "Abrir votación"}
+                  </button>
+                </form>
+              </div>
+
+              {/* Entradas del concurso */}
+              <div className="p-5">
+                <div className="flex flex-col gap-3 mb-6">
+                  {contest.contest_entries?.length === 0 && (
+                    <p className="font-mono text-xs text-bone-dim">Sin cortos agregados aún.</p>
+                  )}
+                  {contest.contest_entries?.map((entry: { id: string; title: string; youtube_url: string; description?: string; contest_votes?: unknown[] }) => (
+                    <div key={entry.id} className="flex items-center justify-between gap-3 border border-border-dark rounded px-4 py-3">
+                      <div>
+                        <span className="font-semibold text-sm">{entry.title}</span>
+                        <span className="font-mono text-xs text-bone-dim ml-3">{entry.contest_votes?.length ?? 0} votos</span>
+                      </div>
+                      <form action={eliminarEntrada}>
+                        <input type="hidden" name="id" value={entry.id} />
+                        <button type="submit" className="font-mono text-xs text-blood hover:text-bone">Eliminar</button>
+                      </form>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Agregar entrada */}
+                <form action={agregarEntrada} className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <input type="hidden" name="contest_id" value={contest.id} />
+                  <input name="title" type="text" required placeholder="Título del corto"
+                    className="bg-void border border-border-dark rounded px-3 py-2 text-bone text-sm" />
+                  <input name="youtube_url" type="url" required placeholder="https://youtube.com/watch?v=..."
+                    className="bg-void border border-border-dark rounded px-3 py-2 text-bone text-sm font-mono" />
+                  <input name="description" type="text" placeholder="Descripción breve (opcional)"
+                    className="bg-void border border-border-dark rounded px-3 py-2 text-bone text-sm" />
+                  <div className="md:col-span-3">
+                    <button type="submit"
+                      className="font-mono text-xs uppercase tracking-wide border border-border-dark text-bone-dim rounded px-4 py-2 hover:border-amber hover:text-amber">
+                      + Agregar corto
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </main>
+  );
+}
