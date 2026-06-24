@@ -31,9 +31,9 @@ export default async function RootLayout({
       <body>
         <div className="grain" />
         <header className="border-b border-border-dark">
-          <div className="max-w-5xl mx-auto px-8 py-5 flex items-center justify-between">
+          <div className="max-w-5xl mx-auto px-8 py-2 flex items-center justify-between">
             <Link href="/">
-              <Image src="/logo.svg" alt="Terror en Corto" width={80} height={60} priority />
+              <Image src="/logo.svg" alt="Terror en Corto" width={120} height={90} priority />
             </Link>
             <div className="flex items-center gap-8">
               <nav className="hidden md:flex gap-8 font-mono text-xs uppercase tracking-wider text-bone-dim">
