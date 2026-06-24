@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import RecTimer from "@/components/RecTimer";
 
 const ESTADO_LABEL: Record<string, { texto: string; clase: string }> = {
   publicado: { texto: "testimonio real", clase: "" },
@@ -26,10 +27,7 @@ export default async function Home() {
     <main>
       <section className="border-b border-border-dark py-24 relative overflow-hidden">
         <div className="max-w-5xl mx-auto px-8 relative z-10">
-          <div className="flex items-center gap-2 font-mono text-xs tracking-widest text-blood mb-7">
-            <span className="w-2 h-2 rounded-full bg-blood inline-block" />
-            ARCHIVO ABIERTO
-          </div>
+          <RecTimer />
           <h1 className="font-display text-5xl md:text-6xl leading-tight max-w-xl">
             Lo que viste no se va a olvidar.
           </h1>
