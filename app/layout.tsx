@@ -40,8 +40,8 @@ export default async function RootLayout({
                 <Link href="/" className="hover:text-amber">Inicio</Link>
                 <Link href="/concurso" className="hover:text-amber">Concurso</Link>
                 <Link href="/enviar" className="hover:text-amber">Enviar historia</Link>
-                {user && <Link href="/admin" className="hover:text-amber">Admin</Link>}
-                {user && <Link href="/admin/concurso" className="hover:text-amber">Concurso admin</Link>}
+                {user && <Link href="/admin" className="text-blood hover:text-amber">Admin</Link>}
+                {user && <Link href="/admin/concurso" className="text-blood hover:text-amber">Concurso admin</Link>}
               </nav>
               {user ? (
                 <LogoutButton />
