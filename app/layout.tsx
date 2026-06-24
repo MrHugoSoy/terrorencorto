@@ -28,6 +28,7 @@ export default async function RootLayout({
         />
       </head>
       <body>
+        <div className="grain" />
         <header className="border-b border-border-dark">
           <div className="max-w-5xl mx-auto px-8 py-5 flex items-center justify-between">
             <Link href="/" className="font-display text-lg">

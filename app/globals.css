@@ -10,6 +10,7 @@
   --color-blood-deep: #5e1a16;
   --color-amber: #c2954f;
   --color-border-dark: #3a342c;
+  --color-static: #3f4d3a;
 
   --font-display: "Special Elite", monospace;
   --font-body: "Crimson Pro", serif;
@@ -20,6 +21,45 @@ body {
   background: var(--color-void);
   color: var(--color-bone);
   font-family: var(--font-body);
+}
+
+/* grain overlay fijo */
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.05;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.4) 0px,
+    transparent 1px,
+    transparent 2px
+  );
+  mix-blend-mode: overlay;
+}
+
+/* scan lines animadas en el hero */
+.hero-scan::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(63, 77, 58, 0.08) 0px,
+    transparent 2px,
+    transparent 4px
+  );
+  animation: scan 6s linear infinite;
+}
+@keyframes scan {
+  0%   { background-position: 0 0; }
+  100% { background-position: 0 40px; }
+}
+
+/* glitch text-shadow en título hero */
+.title-glitch {
+  text-shadow: 2px 0 0 var(--color-blood-deep), -1px 0 0 var(--color-static);
 }
 
 .stamp {
