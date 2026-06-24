@@ -42,7 +42,7 @@ export default async function Home() {
               Comparte tu historia
             </Link>
             <a
-              href="https://youtube.com"
+              href="https://www.youtube.com/@terrorencorto"
               target="_blank"
               className="font-mono text-sm tracking-wide px-6 py-3 rounded border border-border-dark text-bone-dim hover:border-amber hover:text-amber"
             >
