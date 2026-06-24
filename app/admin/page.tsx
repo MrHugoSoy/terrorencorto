@@ -19,6 +19,7 @@ async function actualizarEstado(formData: FormData) {
 
   await supabase.from("stories").update(updates).eq("id", id);
   revalidatePath("/admin");
+  revalidatePath("/");
 }
 
 const ESTADOS = [

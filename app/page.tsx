@@ -2,6 +2,8 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import RecTimer from "@/components/RecTimer";
 
+export const dynamic = "force-dynamic";
+
 const ESTADO_LABEL: Record<string, { texto: string; clase: string }> = {
   publicado: { texto: "testimonio real", clase: "" },
   seleccionado_canal: { texto: "en producción", clase: "stamp-amber" },
