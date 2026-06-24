@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import "./globals.css";
 import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "@/components/LogoutButton";
@@ -31,8 +32,8 @@ export default async function RootLayout({
         <div className="grain" />
         <header className="border-b border-border-dark">
           <div className="max-w-5xl mx-auto px-8 py-5 flex items-center justify-between">
-            <Link href="/" className="font-display text-lg">
-              TERROR<span className="text-blood">·</span>EN CORTO
+            <Link href="/">
+              <Image src="/logo.svg" alt="Terror en Corto" width={80} height={60} priority />
             </Link>
             <div className="flex items-center gap-8">
               <nav className="hidden md:flex gap-8 font-mono text-xs uppercase tracking-wider text-bone-dim">
