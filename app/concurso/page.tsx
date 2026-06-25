@@ -139,7 +139,9 @@ export default async function ConcursoPage() {
                     )}
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {(contest.contest_entries ?? []).map((entry: { id: string; title: string; youtube_url: string }) => {
+                    {[...(contest.contest_entries ?? [])].sort((a: { id: string }, b: { id: string }) =>
+                      a.id === contest.winner_entry_id ? -1 : b.id === contest.winner_entry_id ? 1 : 0
+                    ).map((entry: { id: string; title: string; youtube_url: string }) => {
                       const videoId = getYouTubeId(entry.youtube_url);
                       const isWinner = entry.id === contest.winner_entry_id;
                       return (
