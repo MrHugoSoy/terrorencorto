@@ -133,17 +133,23 @@ export default async function AdminPage() {
     .order("created_at", { ascending: false });
 
   const pendientes = stories?.filter(s => s.status === "pendiente") ?? [];
-  const publicadas = stories?.filter(s => s.status !== "pendiente") ?? [];
 
   return (
     <main className="max-w-325 mx-auto px-8 py-16">
-      <h1 className="font-display text-2xl mb-2">Cola de moderación</h1>
+      <div className="flex items-center justify-between mb-2">
+        <h1 className="font-display text-2xl">Cola de moderación</h1>
+        <Link
+          href="/admin/historias"
+          className="font-mono text-xs uppercase tracking-widest border border-border-dark text-bone-dim px-5 py-2 rounded hover:border-amber hover:text-amber"
+        >
+          Gestionar publicadas →
+        </Link>
+      </div>
       <p className="text-bone-dim text-sm mb-10">
         Las historias pendientes aparecen aquí. Al guardar como &quot;publicado&quot; desaparecen de la cola.
       </p>
 
-      {/* Cola pendiente */}
-      <div className="flex flex-col gap-4 mb-20">
+      <div className="flex flex-col gap-4">
         {pendientes.length === 0 && (
           <p className="font-mono text-xs text-bone-dim py-8 text-center border border-border-dark rounded">
             La cola está vacía — no hay historias pendientes.
@@ -158,24 +164,6 @@ export default async function AdminPage() {
           />
         ))}
       </div>
-
-      {/* Historias ya publicadas */}
-      {publicadas.length > 0 && (
-        <section>
-          <h2 className="font-display text-xl mb-1 border-t border-border-dark pt-10">Historias publicadas</h2>
-          <p className="text-bone-dim text-sm mb-6">Puedes cambiar categoría, agregar video o eliminar.</p>
-          <div className="flex flex-col gap-4">
-            {publicadas.map((story) => (
-              <StoryCard
-                key={story.id}
-                story={{ ...story, profiles: story.profiles as { username?: string } | null }}
-                action={actualizarEstado}
-                deleteAction={eliminarHistoria}
-              />
-            ))}
-          </div>
-        </section>
-      )}
     </main>
   );
 }
