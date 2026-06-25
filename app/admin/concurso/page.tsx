@@ -95,7 +95,7 @@ export default async function AdminConcursoPage() {
   const { data: profile } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
   if (!profile?.is_admin) redirect("/");
 
-  const { data: contests } = await supabase
+  const { data: contests, error: contestsError } = await supabase
     .from("contests")
     .select("*, contest_entries(id, title, youtube_url, description)")
     .order("year", { ascending: false });
@@ -160,11 +160,20 @@ export default async function AdminConcursoPage() {
         </form>
       </div>
 
+      {/* Debug temporal — eliminar luego */}
+      {contestsError && (
+        <div className="bg-blood/20 border border-blood rounded p-4 mb-6 font-mono text-xs text-bone">
+          <strong>ERROR:</strong> {contestsError.message} | code: {contestsError.code}
+        </div>
+      )}
+      <p className="font-mono text-xs text-bone-dim mb-4">
+        Concursos encontrados: {contests === null ? "null" : contests.length}
+      </p>
+
       {/* Lista de concursos */}
       <div className="flex flex-col gap-10">
         {contests?.map((contest) => {
           const isOpen = contest.is_active && (!contest.ends_at || new Date(contest.ends_at) > now);
-          const totalVotes = 0;
 
           return (
             <div key={contest.id} className="border border-border-dark">
