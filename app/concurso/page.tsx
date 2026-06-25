@@ -132,8 +132,6 @@ export default async function ConcursoPage() {
 
           <div className="flex flex-col gap-20">
             {pastContests.map((contest) => {
-              const sorted = sortedEntries(contest.contest_entries);
-              const winner = sorted[0];
               return (
                 <div key={contest.id}>
                   <div className="flex items-baseline gap-4 mb-8">
