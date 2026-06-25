@@ -12,8 +12,22 @@ async function crearConcurso(formData: FormData) {
     title: formData.get("title") as string,
     ends_at: formData.get("ends_at") || null,
     is_active: false,
+    is_published: false,
   });
   revalidatePath("/admin/concurso");
+}
+
+async function crearArchivoHistorico(formData: FormData) {
+  "use server";
+  const supabase = await createClient();
+  await supabase.from("contests").insert({
+    year: parseInt(formData.get("year") as string),
+    title: formData.get("title") as string,
+    is_active: false,
+    is_published: true,
+  });
+  revalidatePath("/admin/concurso");
+  revalidatePath("/concurso");
 }
 
 async function toggleConcurso(formData: FormData) {
@@ -74,9 +88,10 @@ export default async function AdminConcursoPage() {
       <h1 className="font-display text-2xl mb-2">Gestión de concursos</h1>
       <p className="text-bone-dim text-sm mb-10">Crea concursos anuales, agrega cortos y abre la votación.</p>
 
-      {/* Crear concurso */}
-      <div className="bg-paper border border-border-dark p-6 mb-10">
-        <h2 className="font-display text-lg mb-5">Nuevo concurso</h2>
+      {/* Crear concurso con votación */}
+      <div className="bg-paper border border-border-dark p-6 mb-6">
+        <h2 className="font-display text-lg mb-1">Nuevo concurso con votación</h2>
+        <p className="font-mono text-xs text-bone-dim mb-5">Los usuarios podrán votar cuando lo actives.</p>
         <form action={crearConcurso} className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block font-mono text-xs uppercase tracking-wide text-bone-dim mb-2">Año</label>
@@ -97,6 +112,30 @@ export default async function AdminConcursoPage() {
             <button type="submit"
               className="font-mono text-xs uppercase tracking-wide border border-amber text-amber rounded px-5 py-2 hover:bg-amber hover:text-void">
               Crear concurso
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Archivo histórico */}
+      <div className="bg-paper border border-border-dark p-6 mb-10">
+        <h2 className="font-display text-lg mb-1">Archivar concurso pasado</h2>
+        <p className="font-mono text-xs text-bone-dim mb-5">Se publica directamente en la sección de concursos anteriores, sin votación.</p>
+        <form action={crearArchivoHistorico} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block font-mono text-xs uppercase tracking-wide text-bone-dim mb-2">Año</label>
+            <input name="year" type="number" placeholder="Ej: 2023" required
+              className="w-full bg-void border border-border-dark rounded px-3 py-2 text-bone font-mono text-sm" />
+          </div>
+          <div>
+            <label className="block font-mono text-xs uppercase tracking-wide text-bone-dim mb-2">Título</label>
+            <input name="title" type="text" required placeholder="Ej: Concurso Terror en Corto 2023"
+              className="w-full bg-void border border-border-dark rounded px-3 py-2 text-bone text-sm" />
+          </div>
+          <div className="md:col-span-2">
+            <button type="submit"
+              className="font-mono text-xs uppercase tracking-wide border border-border-dark text-bone-dim rounded px-5 py-2 hover:border-amber hover:text-amber">
+              Crear archivo histórico
             </button>
           </div>
         </form>
