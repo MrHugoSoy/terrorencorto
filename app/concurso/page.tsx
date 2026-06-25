@@ -139,18 +139,18 @@ export default async function ConcursoPage() {
                   <div className="flex items-baseline gap-4 mb-8">
                     <h3 className="font-display text-xl">{contest.title}</h3>
                     <span className="font-mono text-xs text-bone-dim">{contest.year}</span>
-                    {winner && (
+                    {contest.winner_entry_id && (
                       <span className="font-mono text-xs text-amber">
-                        Ganador: {winner.title}
+                        Ganador: {contest.contest_entries?.find((e: { id: string }) => e.id === contest.winner_entry_id)?.title}
                       </span>
                     )}
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {sorted.map((entry, i) => {
+                    {(contest.contest_entries ?? []).map((entry: { id: string; title: string; youtube_url: string }) => {
                       const videoId = getYouTubeId(entry.youtube_url);
-                      const votes = entry.contest_votes?.length ?? 0;
+                      const isWinner = entry.id === contest.winner_entry_id;
                       return (
-                        <div key={entry.id} className={`bg-paper border ${i === 0 ? "border-amber" : "border-border-dark"}`}>
+                        <div key={entry.id} className={`bg-paper border ${isWinner ? "border-amber" : "border-border-dark"}`}>
                           {videoId && (
                             <div className="aspect-video">
                               <iframe
@@ -162,7 +162,7 @@ export default async function ConcursoPage() {
                             </div>
                           )}
                           <div className="p-4 flex items-center gap-2">
-                            {i === 0 && <span className="font-mono text-xs text-amber">🏆</span>}
+                            {isWinner && <span className="font-mono text-xs text-amber">🏆</span>}
                             <span className="font-semibold">{entry.title}</span>
                           </div>
                         </div>

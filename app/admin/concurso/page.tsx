@@ -69,6 +69,16 @@ async function eliminarEntrada(formData: FormData) {
   revalidatePath("/admin/concurso");
 }
 
+async function marcarGanador(formData: FormData) {
+  "use server";
+  const supabase = await createClient();
+  const id = formData.get("id") as string;
+  const winner_entry_id = formData.get("winner_entry_id") as string || null;
+  await supabase.from("contests").update({ winner_entry_id }).eq("id", id);
+  revalidatePath("/admin/concurso");
+  revalidatePath("/concurso");
+}
+
 async function eliminarConcurso(formData: FormData) {
   "use server";
   const supabase = await createClient();
@@ -222,6 +232,25 @@ export default async function AdminConcursoPage() {
                     </div>
                   ))}
                 </div>
+
+                {/* Marcar ganador */}
+                {(contest.contest_entries?.length ?? 0) > 0 && (
+                  <form action={marcarGanador} className="flex items-center gap-3 mb-6 border-t border-border-dark pt-5">
+                    <input type="hidden" name="id" value={contest.id} />
+                    <label className="font-mono text-xs uppercase tracking-wide text-bone-dim shrink-0">Ganador</label>
+                    <select name="winner_entry_id" defaultValue={contest.winner_entry_id ?? ""}
+                      className="flex-1 bg-void border border-border-dark rounded px-3 py-2 text-bone text-sm font-mono">
+                      <option value="">— Sin marcar —</option>
+                      {contest.contest_entries?.map((e: { id: string; title: string }) => (
+                        <option key={e.id} value={e.id}>{e.title}</option>
+                      ))}
+                    </select>
+                    <button type="submit"
+                      className="font-mono text-xs uppercase tracking-wide border border-amber text-amber rounded px-4 py-2 hover:bg-amber hover:text-void shrink-0">
+                      Guardar
+                    </button>
+                  </form>
+                )}
 
                 {/* Agregar entrada */}
                 <form action={agregarEntrada} className="grid grid-cols-1 md:grid-cols-3 gap-3">
