@@ -79,3 +79,8 @@ body {
   border-color: var(--color-amber);
   color: var(--color-amber);
 }
+
+.stamp-dim {
+  border-color: var(--color-bone-dim);
+  color: var(--color-bone-dim);
+}

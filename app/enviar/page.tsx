@@ -18,6 +18,7 @@ async function enviarHistoria(formData: FormData) {
     content: formData.get("content") as string,
     location: formData.get("location") as string,
     mode,
+    category: formData.get("category") as string || "sin_resolver",
     channel_consent: channelConsent,
   });
 

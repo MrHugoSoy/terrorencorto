@@ -4,10 +4,15 @@ import RecTimer from "@/components/RecTimer";
 
 export const dynamic = "force-dynamic";
 
-const ESTADO_LABEL: Record<string, { texto: string; clase: string }> = {
-  publicado: { texto: "testimonio real", clase: "" },
-  seleccionado_canal: { texto: "en producción", clase: "stamp-amber" },
-  usado_canal: { texto: "narrado en canal", clase: "stamp-amber" },
+const CATEGORY_STAMP: Record<string, { texto: string; clase: string }> = {
+  sin_resolver:    { texto: "sin resolver",    clase: "" },
+  testimonio_real: { texto: "testimonio real", clase: "stamp-amber" },
+  archivado:       { texto: "archivado",       clase: "stamp-dim" },
+};
+
+const STATUS_OVERRIDE: Record<string, { texto: string; clase: string }> = {
+  seleccionado_canal: { texto: "en producción",   clase: "stamp-amber" },
+  usado_canal:        { texto: "narrado en canal", clase: "stamp-amber" },
 };
 
 export default async function Home() {
@@ -15,7 +20,7 @@ export default async function Home() {
 
   const { data: stories } = await supabase
     .from("stories")
-    .select("id, title, content, location, mode, status, case_number, anon_id, created_at, profiles(username)")
+    .select("id, title, content, location, mode, status, category, case_number, anon_id, created_at, profiles(username)")
     .in("status", ["publicado", "seleccionado_canal", "usado_canal"])
     .order("created_at", { ascending: false })
     .limit(12);
@@ -91,7 +96,7 @@ export default async function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {stories?.map((story) => {
-            const estado = ESTADO_LABEL[story.status] ?? ESTADO_LABEL.publicado;
+            const estado = STATUS_OVERRIDE[story.status] ?? CATEGORY_STAMP[story.category] ?? CATEGORY_STAMP.sin_resolver;
             const autor =
               story.mode === "incognito"
                 ? `Testigo anónimo #${String(story.anon_id).padStart(4, "0")}`

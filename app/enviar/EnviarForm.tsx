@@ -10,10 +10,12 @@ export default function EnviarForm({
   username: string;
 }) {
   const [mode, setMode] = useState<"autor" | "incognito">("autor");
+  const [category, setCategory] = useState<"sin_resolver" | "testimonio_real" | "archivado">("sin_resolver");
 
   return (
     <form action={action} className="flex flex-col gap-5">
       <input type="hidden" name="mode" value={mode} />
+      <input type="hidden" name="category" value={category} />
 
       <div className="flex border border-border-dark rounded overflow-hidden">
         <button
@@ -78,6 +80,33 @@ export default function EnviarForm({
           placeholder="Ciudad, lugar específico"
           className="w-full bg-void border border-border-dark rounded px-3 py-3 text-bone focus:outline-none focus:border-amber"
         />
+      </div>
+
+      <div>
+        <label className="block font-mono text-xs uppercase tracking-wide text-bone-dim mb-3">
+          ¿Cómo clasificas tu historia?
+        </label>
+        <div className="flex flex-col gap-2">
+          {([
+            { value: "sin_resolver", label: "Sin resolver", desc: "Nunca encontré explicación para lo que ocurrió" },
+            { value: "testimonio_real", label: "Testimonio real", desc: "Confirmo que lo viví y puedo dar fe de ello" },
+            { value: "archivado", label: "Archivado", desc: "Ya tiene contexto o conclusión, pero lo comparto" },
+          ] as const).map(({ value, label, desc }) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setCategory(value)}
+              className={`text-left px-4 py-3 rounded border transition-colors ${
+                category === value
+                  ? "border-amber bg-amber/10 text-bone"
+                  : "border-border-dark text-bone-dim hover:border-amber/50"
+              }`}
+            >
+              <span className="font-mono text-xs uppercase tracking-wide block mb-0.5">{label}</span>
+              <span className="text-xs">{desc}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
       <label className="flex items-start gap-3 font-mono text-xs text-bone-dim leading-relaxed border border-border-dark rounded px-4 py-4">

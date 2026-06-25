@@ -1,15 +1,17 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import DeleteStoryButton from "./DeleteStoryButton";
 
 async function actualizarEstado(formData: FormData) {
   "use server";
   const supabase = await createClient();
   const id = formData.get("id") as string;
   const status = formData.get("status") as string;
+  const category = formData.get("category") as string;
   const video_url = formData.get("video_url") as string;
 
-  const updates: Record<string, unknown> = { status };
+  const updates: Record<string, unknown> = { status, category };
   if (status === "publicado" || status === "seleccionado_canal") {
     updates.published_at = new Date().toISOString();
   }
@@ -18,6 +20,14 @@ async function actualizarEstado(formData: FormData) {
   }
 
   await supabase.from("stories").update(updates).eq("id", id);
+  revalidatePath("/admin");
+  revalidatePath("/");
+}
+
+async function eliminarHistoria(formData: FormData) {
+  "use server";
+  const supabase = await createClient();
+  await supabase.from("stories").delete().eq("id", formData.get("id") as string);
   revalidatePath("/admin");
   revalidatePath("/");
 }
@@ -45,7 +55,7 @@ export default async function AdminPage() {
 
   const { data: stories } = await supabase
     .from("stories")
-    .select("id, title, content, status, mode, channel_consent, video_url, case_number, created_at, profiles(username)")
+    .select("id, title, content, status, category, mode, channel_consent, video_url, case_number, created_at, profiles(username)")
     .order("created_at", { ascending: false });
 
   return (
@@ -78,6 +88,15 @@ export default async function AdminPage() {
 
             <div className="flex flex-col gap-2 md:w-56">
               <select
+                name="category"
+                defaultValue={story.category ?? "sin_resolver"}
+                className="bg-void border border-border-dark rounded px-3 py-2 text-sm font-mono"
+              >
+                <option value="sin_resolver">Sin resolver</option>
+                <option value="testimonio_real">Testimonio real</option>
+                <option value="archivado">Archivado</option>
+              </select>
+              <select
                 name="status"
                 defaultValue={story.status}
                 className="bg-void border border-border-dark rounded px-3 py-2 text-sm font-mono"
@@ -100,6 +119,7 @@ export default async function AdminPage() {
               >
                 Guardar
               </button>
+              <DeleteStoryButton action={eliminarHistoria} id={story.id} />
             </div>
           </form>
         ))}
