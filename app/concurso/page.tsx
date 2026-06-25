@@ -15,7 +15,7 @@ export default async function ConcursoPage() {
 
   const { data: allContests } = await supabase
     .from("contests")
-    .select("*, contest_entries(id, title, youtube_url, description, contest_votes(id))")
+    .select("*, contest_entries(id, title, youtube_url, description)")
     .order("year", { ascending: false });
 
   const now = new Date();
@@ -33,8 +33,8 @@ export default async function ConcursoPage() {
         .maybeSingle()
     : { data: null };
 
-  const sortedEntries = (entries: typeof activeContest.contest_entries) =>
-    [...(entries ?? [])].sort((a, b) => (b.contest_votes?.length ?? 0) - (a.contest_votes?.length ?? 0));
+  const sortedEntries = (entries: { id: string; title: string; youtube_url: string; description?: string }[] | null) =>
+    [...(entries ?? [])];
 
   return (
     <main className="max-w-5xl mx-auto px-8 py-16">
@@ -70,9 +70,8 @@ export default async function ConcursoPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {sortedEntries(activeContest.contest_entries).map((entry, i) => {
+            {sortedEntries(activeContest.contest_entries).map((entry) => {
               const videoId = getYouTubeId(entry.youtube_url);
-              const votes = entry.contest_votes?.length ?? 0;
               return (
                 <div key={entry.id} className="bg-paper border border-border-dark">
                   {videoId && (
@@ -86,12 +85,8 @@ export default async function ConcursoPage() {
                     </div>
                   )}
                   <div className="p-5">
-                    <div className="flex items-start justify-between gap-3 mb-2">
-                      <div>
-                        {i === 0 && <span className="font-mono text-xs text-amber mr-2">#1</span>}
-                        <span className="font-semibold text-lg">{entry.title}</span>
-                      </div>
-                      <span className="font-mono text-xs text-bone-dim shrink-0">{votes} {votes === 1 ? "voto" : "votos"}</span>
+                    <div className="flex items-start gap-3 mb-2">
+                      <span className="font-semibold text-lg">{entry.title}</span>
                     </div>
                     {entry.description && (
                       <p className="text-bone-dim text-sm leading-relaxed mb-4">{entry.description}</p>
