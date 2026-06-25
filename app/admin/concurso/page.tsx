@@ -97,7 +97,7 @@ export default async function AdminConcursoPage() {
 
   const { data: contests } = await supabase
     .from("contests")
-    .select("*, contest_entries(id, title, youtube_url, description, contest_votes(id))")
+    .select("*, contest_entries(id, title, youtube_url, description)")
     .order("year", { ascending: false });
 
   const now = new Date();
@@ -164,9 +164,7 @@ export default async function AdminConcursoPage() {
       <div className="flex flex-col gap-10">
         {contests?.map((contest) => {
           const isOpen = contest.is_active && (!contest.ends_at || new Date(contest.ends_at) > now);
-          const totalVotes = contest.contest_entries?.reduce(
-            (sum: number, e: { contest_votes?: unknown[] }) => sum + (e.contest_votes?.length ?? 0), 0
-          ) ?? 0;
+          const totalVotes = 0;
 
           return (
             <div key={contest.id} className="border border-border-dark">
@@ -180,7 +178,6 @@ export default async function AdminConcursoPage() {
                       · Cierra {new Date(contest.ends_at).toLocaleDateString("es-MX", { day: "numeric", month: "long" })}
                     </span>
                   )}
-                  <span className="font-mono text-xs text-bone-dim ml-3">· {totalVotes} votos totales</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <DeleteContestButton action={eliminarConcurso} id={contest.id} />
@@ -219,11 +216,10 @@ export default async function AdminConcursoPage() {
                   {contest.contest_entries?.length === 0 && (
                     <p className="font-mono text-xs text-bone-dim">Sin cortos agregados aún.</p>
                   )}
-                  {contest.contest_entries?.map((entry: { id: string; title: string; youtube_url: string; description?: string; contest_votes?: unknown[] }) => (
+                  {contest.contest_entries?.map((entry: { id: string; title: string; youtube_url: string; description?: string }) => (
                     <div key={entry.id} className="flex items-center justify-between gap-3 border border-border-dark rounded px-4 py-3">
                       <div>
                         <span className="font-semibold text-sm">{entry.title}</span>
-                        <span className="font-mono text-xs text-bone-dim ml-3">{entry.contest_votes?.length ?? 0} votos</span>
                       </div>
                       <form action={eliminarEntrada}>
                         <input type="hidden" name="id" value={entry.id} />
