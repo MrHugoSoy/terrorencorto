@@ -23,7 +23,7 @@ export default function VoteButton({
 
   if (hasVoted) {
     return (
-      <div className={`font-mono text-xs px-4 py-2 rounded border ${
+      <div className={`font-mono text-sm px-5 py-3 rounded border text-center ${
         votedForThisEntry
           ? "border-amber text-amber"
           : "border-border-dark text-bone-dim"
@@ -48,7 +48,7 @@ export default function VoteButton({
     <button
       onClick={handleVote}
       disabled={loading}
-      className="font-mono text-xs px-4 py-2 rounded border border-blood text-blood hover:bg-blood hover:text-bone transition-colors disabled:opacity-50"
+      className="w-full font-mono text-sm px-5 py-3 rounded border border-blood text-blood hover:bg-blood hover:text-bone transition-colors disabled:opacity-50 active:scale-95"
     >
       {loading ? "Votando..." : "Votar por este"}
     </button>

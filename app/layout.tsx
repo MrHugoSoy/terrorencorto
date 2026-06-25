@@ -4,6 +4,7 @@ import Image from "next/image";
 import "./globals.css";
 import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "@/components/LogoutButton";
+import MobileNav from "@/components/MobileNav";
 
 export const metadata: Metadata = {
   title: "Terror en Corto",
@@ -31,11 +32,11 @@ export default async function RootLayout({
       <body>
         <div className="grain" />
         <header className="border-b border-border-dark">
-          <div className="max-w-325 mx-auto px-8 py-2 flex items-center justify-between">
-            <Link href="/">
-              <Image src="/logo.svg" alt="Terror en Corto" width={94} height={70} priority />
+          <div className="max-w-325 mx-auto px-6 md:px-8 h-16 flex items-center justify-between">
+            <Link href="/" className="shrink-0">
+              <Image src="/logo.svg" alt="Terror en Corto" width={70} height={52} priority className="md:w-23.5 md:h-17.5" />
             </Link>
-            <div className="flex items-center gap-8">
+            <div className="flex items-center gap-6">
               <nav className="hidden md:flex gap-8 font-mono text-xs uppercase tracking-wider text-bone-dim">
                 <Link href="/" className="hover:text-amber">Inicio</Link>
                 <Link href="/archivo" className="hover:text-amber">Archivo</Link>
@@ -44,16 +45,19 @@ export default async function RootLayout({
                 {user && <Link href="/admin" className="text-blood hover:text-amber">Admin</Link>}
                 {user && <Link href="/admin/concurso" className="text-blood hover:text-amber">Concurso admin</Link>}
               </nav>
-              {user ? (
-                <LogoutButton />
-              ) : (
-                <Link
-                  href="/login"
-                  className="font-mono text-xs uppercase tracking-wider border border-border-dark px-4 py-2 rounded hover:border-amber hover:text-amber"
-                >
-                  Iniciar sesión
-                </Link>
-              )}
+              <div className="hidden md:block">
+                {user ? (
+                  <LogoutButton />
+                ) : (
+                  <Link
+                    href="/login"
+                    className="font-mono text-xs uppercase tracking-wider border border-border-dark px-4 py-2 rounded hover:border-amber hover:text-amber"
+                  >
+                    Iniciar sesión
+                  </Link>
+                )}
+              </div>
+              <MobileNav loggedIn={!!user} />
             </div>
           </div>
         </header>
