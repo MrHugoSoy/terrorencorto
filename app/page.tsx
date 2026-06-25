@@ -23,7 +23,7 @@ export default async function Home() {
     .select("id, title, content, location, mode, status, category, case_number, anon_id, created_at, profiles(username)")
     .in("status", ["publicado", "seleccionado_canal", "usado_canal"])
     .order("created_at", { ascending: false })
-    .limit(12);
+    .limit(9);
 
   const { count: totalArchivadas } = await supabase
     .from("stories")
@@ -123,6 +123,17 @@ export default async function Home() {
             );
           })}
         </div>
+
+        {(totalArchivadas ?? 0) > 9 && (
+          <div className="mt-12 text-center">
+            <Link
+              href="/historias"
+              className="font-mono text-xs uppercase tracking-widest border border-border-dark text-bone-dim px-8 py-3 rounded hover:border-amber hover:text-amber"
+            >
+              Ver todas las historias →
+            </Link>
+          </div>
+        )}
       </section>
     </main>
   );
