@@ -15,7 +15,7 @@ export default async function ConcursoPage() {
 
   const { data: allContests } = await supabase
     .from("contests")
-    .select("*, contest_entries(id, title, youtube_url, description)")
+    .select("*, contest_entries!contest_id(id, title, youtube_url, description)")
     .order("year", { ascending: false });
 
   const now = new Date();
