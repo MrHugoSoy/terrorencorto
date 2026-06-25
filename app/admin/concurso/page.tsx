@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import DeleteContestButton from "./DeleteContestButton";
 
 export const dynamic = "force-dynamic";
 
@@ -172,14 +173,7 @@ export default async function AdminConcursoPage() {
                   <span className="font-mono text-xs text-bone-dim ml-3">· {totalVotes} votos totales</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <form action={eliminarConcurso}
-                    onSubmit={(e) => { if (!confirm("¿Eliminar este concurso y todos sus cortos y votos?")) e.preventDefault(); }}>
-                    <input type="hidden" name="id" value={contest.id} />
-                    <button type="submit"
-                      className="font-mono text-xs uppercase tracking-wide rounded px-4 py-2 border border-blood text-blood hover:bg-blood hover:text-bone">
-                      Eliminar
-                    </button>
-                  </form>
+                  <DeleteContestButton action={eliminarConcurso} id={contest.id} />
                   <form action={toggleConcurso}>
                     <input type="hidden" name="id" value={contest.id} />
                     <input type="hidden" name="is_active" value={(!contest.is_active).toString()} />
