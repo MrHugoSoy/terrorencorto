@@ -36,7 +36,7 @@ export default async function Home() {
       <section className="hero-scan border-b border-border-dark py-24 relative overflow-hidden">
         <div className="max-w-325 mx-auto px-8 relative z-10">
           <RecTimer />
-          <h1 className="title-glitch font-display text-6xl md:text-8xl leading-tight max-w-3xl">
+          <h1 className="title-glitch font-display text-6xl md:text-7xl leading-tight max-w-3xl">
             Lo que viste<br />no se va a olvidar.
           </h1>
           <p className="text-bone-dim text-lg max-w-md mt-6 leading-relaxed">
