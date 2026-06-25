@@ -25,6 +25,16 @@ async function toggleConcurso(formData: FormData) {
   revalidatePath("/admin/concurso");
 }
 
+async function togglePublicado(formData: FormData) {
+  "use server";
+  const supabase = await createClient();
+  const id = formData.get("id") as string;
+  const is_published = formData.get("is_published") === "true";
+  await supabase.from("contests").update({ is_published }).eq("id", id);
+  revalidatePath("/admin/concurso");
+  revalidatePath("/concurso");
+}
+
 async function agregarEntrada(formData: FormData) {
   "use server";
   const supabase = await createClient();
@@ -114,18 +124,34 @@ export default async function AdminConcursoPage() {
                   )}
                   <span className="font-mono text-xs text-bone-dim ml-3">· {totalVotes} votos totales</span>
                 </div>
-                <form action={toggleConcurso} className="flex items-center gap-2">
-                  <input type="hidden" name="id" value={contest.id} />
-                  <input type="hidden" name="is_active" value={(!contest.is_active).toString()} />
-                  <button type="submit"
-                    className={`font-mono text-xs uppercase tracking-wide rounded px-4 py-2 border ${
-                      isOpen
-                        ? "border-blood text-blood hover:bg-blood hover:text-bone"
-                        : "border-amber text-amber hover:bg-amber hover:text-void"
-                    }`}>
-                    {contest.is_active ? "Cerrar votación" : "Abrir votación"}
-                  </button>
-                </form>
+                <div className="flex items-center gap-2">
+                  <form action={toggleConcurso}>
+                    <input type="hidden" name="id" value={contest.id} />
+                    <input type="hidden" name="is_active" value={(!contest.is_active).toString()} />
+                    <button type="submit"
+                      className={`font-mono text-xs uppercase tracking-wide rounded px-4 py-2 border ${
+                        isOpen
+                          ? "border-blood text-blood hover:bg-blood hover:text-bone"
+                          : "border-amber text-amber hover:bg-amber hover:text-void"
+                      }`}>
+                      {contest.is_active ? "Cerrar votación" : "Abrir votación"}
+                    </button>
+                  </form>
+                  {!contest.is_active && (
+                    <form action={togglePublicado}>
+                      <input type="hidden" name="id" value={contest.id} />
+                      <input type="hidden" name="is_published" value={(!contest.is_published).toString()} />
+                      <button type="submit"
+                        className={`font-mono text-xs uppercase tracking-wide rounded px-4 py-2 border ${
+                          contest.is_published
+                            ? "border-border-dark text-bone-dim hover:border-blood hover:text-blood"
+                            : "border-border-dark text-bone-dim hover:border-amber hover:text-amber"
+                        }`}>
+                        {contest.is_published ? "Ocultar resultados" : "Publicar resultados"}
+                      </button>
+                    </form>
+                  )}
+                </div>
               </div>
 
               {/* Entradas del concurso */}
