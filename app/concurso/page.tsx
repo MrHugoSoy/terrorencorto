@@ -141,7 +141,7 @@ export default async function ConcursoPage() {
                     <span className="font-mono text-xs text-bone-dim">{contest.year}</span>
                     {winner && (
                       <span className="font-mono text-xs text-amber">
-                        Ganador: {winner.title} · {winner.contest_votes?.length ?? 0} votos
+                        Ganador: {winner.title}
                       </span>
                     )}
                   </div>
@@ -161,12 +161,9 @@ export default async function ConcursoPage() {
                               />
                             </div>
                           )}
-                          <div className="p-4 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              {i === 0 && <span className="font-mono text-xs text-amber">🏆</span>}
-                              <span className="font-semibold">{entry.title}</span>
-                            </div>
-                            <span className="font-mono text-xs text-bone-dim">{votes} votos</span>
+                          <div className="p-4 flex items-center gap-2">
+                            {i === 0 && <span className="font-mono text-xs text-amber">🏆</span>}
+                            <span className="font-semibold">{entry.title}</span>
                           </div>
                         </div>
                       );
