@@ -25,6 +25,12 @@ export default async function Home() {
     .select("id", { count: "exact", head: true })
     .in("status", ["publicado", "seleccionado_canal", "usado_canal"]);
 
+  const semanaAtras = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const { count: enviadasSemana } = await supabase
+    .from("stories")
+    .select("id", { count: "exact", head: true })
+    .gte("created_at", semanaAtras);
+
   return (
     <main>
       <section className="hero-scan border-b border-border-dark py-24 relative overflow-hidden">
@@ -59,6 +65,14 @@ export default async function Home() {
           <div className="py-7">
             <div className="font-mono text-3xl text-amber">{totalArchivadas ?? 0}</div>
             <div className="font-mono text-xs uppercase tracking-wide text-bone-dim mt-1">historias archivadas</div>
+          </div>
+          <div className="py-7 md:px-8">
+            <div className="font-mono text-3xl text-amber">{enviadasSemana ?? 0}</div>
+            <div className="font-mono text-xs uppercase tracking-wide text-bone-dim mt-1">enviadas esta semana</div>
+          </div>
+          <div className="py-7 md:px-8">
+            <div className="font-mono text-3xl text-amber">9,4k</div>
+            <div className="font-mono text-xs uppercase tracking-wide text-bone-dim mt-1">testigos leyendo</div>
           </div>
         </div>
       </section>
