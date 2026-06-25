@@ -41,7 +41,7 @@ export default async function HistoriasPage({
       <div className="flex items-baseline justify-between border-b border-border-dark pb-4 mb-10">
         <div>
           <Link href="/" className="font-mono text-xs text-bone-dim hover:text-amber">← inicio</Link>
-          <h1 className="font-display text-3xl mt-3">Archivo de expedientes</h1>
+          <h1 className="font-display text-3xl mt-3">Archivo</h1>
         </div>
         <span className="font-mono text-xs text-bone-dim">{count ?? 0} historias</span>
       </div>
@@ -84,7 +84,7 @@ export default async function HistoriasPage({
         <div className="flex justify-center gap-3 mt-14">
           {paginaActual > 1 && (
             <Link
-              href={`/historias?pagina=${paginaActual - 1}`}
+              href={`/archivo?pagina=${paginaActual - 1}`}
               className="font-mono text-xs uppercase tracking-widest border border-border-dark text-bone-dim px-6 py-3 rounded hover:border-amber hover:text-amber"
             >
               ← Anterior
@@ -95,7 +95,7 @@ export default async function HistoriasPage({
           </span>
           {paginaActual < totalPaginas && (
             <Link
-              href={`/historias?pagina=${paginaActual + 1}`}
+              href={`/archivo?pagina=${paginaActual + 1}`}
               className="font-mono text-xs uppercase tracking-widest border border-border-dark text-bone-dim px-6 py-3 rounded hover:border-amber hover:text-amber"
             >
               Siguiente →

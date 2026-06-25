@@ -127,7 +127,7 @@ export default async function Home() {
         {(totalArchivadas ?? 0) > 9 && (
           <div className="mt-12 text-center">
             <Link
-              href="/historias"
+              href="/archivo"
               className="font-mono text-xs uppercase tracking-widest border border-border-dark text-bone-dim px-8 py-3 rounded hover:border-amber hover:text-amber"
             >
               Ver todas las historias →
