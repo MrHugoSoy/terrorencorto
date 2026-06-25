@@ -31,7 +31,7 @@ export default async function RootLayout({
       <body>
         <div className="grain" />
         <header className="border-b border-border-dark">
-          <div className="max-w-5xl mx-auto px-8 py-2 flex items-center justify-between">
+          <div className="max-w-325 mx-auto px-8 py-2 flex items-center justify-between">
             <Link href="/">
               <Image src="/logo.svg" alt="Terror en Corto" width={94} height={70} priority />
             </Link>
@@ -58,7 +58,7 @@ export default async function RootLayout({
         </header>
         {children}
         <footer className="border-t border-border-dark mt-20">
-          <div className="max-w-5xl mx-auto px-8 py-9 font-mono text-xs text-bone-dim leading-relaxed">
+          <div className="max-w-325 mx-auto px-8 py-9 font-mono text-xs text-bone-dim leading-relaxed">
             ADVERTENCIA: el contenido de este archivo no ha sido verificado por ninguna autoridad. Léase bajo su propio riesgo.
             <br />
             © Terror en Corto. Algunas historias pueden ser narradas en el canal de YouTube @terrorencorto con autorización del autor.

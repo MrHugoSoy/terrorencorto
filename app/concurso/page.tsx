@@ -37,7 +37,7 @@ export default async function ConcursoPage() {
     [...(entries ?? [])];
 
   return (
-    <main className="max-w-5xl mx-auto px-8 py-16">
+    <main className="max-w-325 mx-auto px-8 py-16">
 
       {/* Concurso activo */}
       {activeContest ? (

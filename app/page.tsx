@@ -34,7 +34,7 @@ export default async function Home() {
   return (
     <main>
       <section className="hero-scan border-b border-border-dark py-24 relative overflow-hidden">
-        <div className="max-w-5xl mx-auto px-8 relative z-10">
+        <div className="max-w-325 mx-auto px-8 relative z-10">
           <RecTimer />
           <h1 className="title-glitch font-display text-5xl md:text-6xl leading-tight max-w-xl">
             Lo que viste no se va a olvidar.
@@ -61,7 +61,7 @@ export default async function Home() {
       </section>
 
       <section className="border-b border-border-dark">
-        <div className="max-w-5xl mx-auto px-8 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border-dark">
+        <div className="max-w-325 mx-auto px-8 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border-dark">
           <div className="py-7">
             <div className="font-mono text-3xl text-amber">{totalArchivadas ?? 0}</div>
             <div className="font-mono text-xs uppercase tracking-wide text-bone-dim mt-1">historias archivadas</div>
@@ -77,7 +77,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="max-w-5xl mx-auto px-8 py-20">
+      <section className="max-w-325 mx-auto px-8 py-20">
         <div className="flex justify-between items-baseline border-b border-border-dark pb-4 mb-10">
           <h2 className="font-display text-2xl">Expedientes recientes</h2>
           <span className="font-mono text-xs text-bone-dim">ORDENADO POR FECHA</span>

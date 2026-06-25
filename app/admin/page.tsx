@@ -49,7 +49,7 @@ export default async function AdminPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <main className="max-w-5xl mx-auto px-8 py-16">
+    <main className="max-w-325 mx-auto px-8 py-16">
       <h1 className="font-display text-2xl mb-2">Cola de moderación</h1>
       <p className="text-bone-dim text-sm mb-10">
         Marca como &quot;publicado&quot; lo que va al sitio. Marca como &quot;seleccionado para canal&quot;

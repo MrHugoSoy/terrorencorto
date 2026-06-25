@@ -103,7 +103,7 @@ export default async function AdminConcursoPage() {
   const now = new Date();
 
   return (
-    <main className="max-w-4xl mx-auto px-8 py-16">
+    <main className="max-w-325 mx-auto px-8 py-16">
       <h1 className="font-display text-2xl mb-2">Gestión de concursos</h1>
       <p className="text-bone-dim text-sm mb-10">Crea concursos anuales, agrega cortos y abre la votación.</p>
 
