@@ -80,12 +80,13 @@ function StoryCard({ story, action, deleteAction }: {
       <div className="flex flex-col gap-2 md:w-56 shrink-0">
         <select
           name="category"
-          defaultValue={story.category ?? "sin_resolver"}
+          defaultValue={story.category ?? "testimonio_real"}
           className="bg-void border border-border-dark rounded px-3 py-2 text-sm font-mono"
         >
-          <option value="sin_resolver">Sin resolver</option>
           <option value="testimonio_real">Testimonio real</option>
-          <option value="archivado">Archivado</option>
+          <option value="leyenda_urbana">Leyenda urbana</option>
+          <option value="paranormal">Paranormal</option>
+          <option value="creepypasta">Creepypasta</option>
         </select>
         <select
           name="status"

@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import RecTimer from "@/components/RecTimer";
+import ShareButtons from "@/components/ShareButtons";
 
 export const dynamic = "force-dynamic";
 
 const CATEGORY_STAMP: Record<string, { texto: string; clase: string }> = {
-  sin_resolver:    { texto: "sin resolver",    clase: "" },
-  testimonio_real: { texto: "testimonio real", clase: "stamp-amber" },
-  archivado:       { texto: "archivado",       clase: "stamp-dim" },
+  testimonio_real: { texto: "Testimonio real", clase: "stamp-amber" },
+  leyenda_urbana:  { texto: "Leyenda urbana",  clase: "stamp-dim" },
+  paranormal:      { texto: "Paranormal",      clase: "" },
+  creepypasta:     { texto: "Creepypasta",     clase: "stamp-dim" },
 };
 
 const STATUS_OVERRIDE: Record<string, { texto: string; clase: string }> = {
@@ -103,23 +105,24 @@ export default async function Home() {
                 : `@${(story.profiles as { username?: string } | null)?.username ?? "anonimo"}`;
 
             return (
-              <Link
-                key={story.id}
-                href={`/historias/${story.id}`}
-                className="block bg-paper border border-border-dark p-6 hover:border-amber transition-colors"
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <span className="font-mono text-xs text-bone-dim">{story.case_number}</span>
-                  <span className={`stamp ${estado.clase}`}>{estado.texto}</span>
+              <div key={story.id} className="bg-paper border border-border-dark hover:border-amber transition-colors flex flex-col">
+                <Link href={`/historias/${story.id}`} className="block p-6 flex-1">
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="font-mono text-xs text-bone-dim">{story.case_number}</span>
+                    <span className={`stamp ${estado.clase}`}>{estado.texto}</span>
+                  </div>
+                  <h3 className="font-semibold text-xl mb-2 leading-snug">{story.title}</h3>
+                  <p className="text-bone-dim text-sm italic leading-relaxed line-clamp-3">
+                    {story.content}
+                  </p>
+                </Link>
+                <div className="px-6 pb-4 border-t border-border-dark pt-3 flex items-center justify-between">
+                  <span className="font-mono text-xs text-bone-dim truncate mr-3">
+                    {autor} · {story.location || "ubicación desconocida"}
+                  </span>
+                  <ShareButtons id={story.id} title={story.title} />
                 </div>
-                <h3 className="font-semibold text-xl mb-2 leading-snug">{story.title}</h3>
-                <p className="text-bone-dim text-sm italic leading-relaxed mb-5 line-clamp-3">
-                  {story.content}
-                </p>
-                <div className="flex justify-between font-mono text-xs text-bone-dim border-t border-border-dark pt-3">
-                  <span>{autor} · {story.location || "ubicación desconocida"}</span>
-                </div>
-              </Link>
+              </div>
             );
           })}
         </div>

@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import ShareButtons from "@/components/ShareButtons";
 
 export default async function HistoriaPage({
   params,
@@ -40,11 +41,16 @@ export default async function HistoriaPage({
         {story.content}
       </article>
 
+      <div className="mt-10 pt-8 border-t border-border-dark flex flex-wrap items-center gap-4">
+        <span className="font-mono text-xs text-bone-dim uppercase tracking-wide">Compartir</span>
+        <ShareButtons id={story.id} title={story.title} size="md" />
+      </div>
+
       {story.video_url && (
         <a
           href={story.video_url}
           target="_blank"
-          className="inline-block mt-10 font-mono text-sm border border-amber text-amber px-5 py-3 rounded hover:bg-amber hover:text-void"
+          className="inline-block mt-6 font-mono text-sm border border-amber text-amber px-5 py-3 rounded hover:bg-amber hover:text-void"
         >
           Ver la versión narrada en el canal →
         </a>

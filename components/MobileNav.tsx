@@ -31,11 +31,11 @@ export default function MobileNav({ loggedIn }: { loggedIn: boolean }) {
       <button
         onClick={() => setOpen(o => !o)}
         aria-label="Menú"
-        className="md:hidden flex flex-col justify-center gap-[5px] p-2 -mr-2"
+        className="md:hidden flex flex-col justify-center gap-1.25 p-2 -mr-2"
       >
-        <span className={`block h-px bg-bone transition-all duration-200 ${open ? "w-6 rotate-45 translate-y-[7px]" : "w-6"}`} />
+        <span className={`block h-px bg-bone transition-all duration-200 ${open ? "w-6 rotate-45 translate-y-1.75" : "w-6"}`} />
         <span className={`block h-px bg-bone transition-all duration-200 ${open ? "opacity-0 w-6" : "w-6"}`} />
-        <span className={`block h-px bg-bone transition-all duration-200 ${open ? "w-6 -rotate-45 -translate-y-[7px]" : "w-4"}`} />
+        <span className={`block h-px bg-bone transition-all duration-200 ${open ? "w-6 -rotate-45 -translate-y-1.75" : "w-4"}`} />
       </button>
 
       {/* Overlay */}
@@ -74,6 +74,9 @@ export default function MobileNav({ loggedIn }: { loggedIn: boolean }) {
 
             {loggedIn && (
               <>
+                <Link href="/perfil" className={`font-mono text-xl uppercase tracking-widest py-5 border-b border-border-dark transition-colors ${pathname === "/perfil" ? "text-amber" : "hover:text-amber"}`}>
+                  Mi perfil
+                </Link>
                 <div className="pt-6 pb-2">
                   <span className="font-mono text-xs text-bone-dim uppercase tracking-widest">Admin</span>
                 </div>

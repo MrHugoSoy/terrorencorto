@@ -45,7 +45,12 @@ export default async function RootLayout({
                 {user && <Link href="/admin" className="text-blood hover:text-amber">Admin</Link>}
                 {user && <Link href="/admin/concurso" className="text-blood hover:text-amber">Concurso admin</Link>}
               </nav>
-              <div className="hidden md:block">
+              <div className="hidden md:flex items-center gap-4">
+                {user && (
+                  <Link href="/perfil" className="font-mono text-xs uppercase tracking-wider text-bone-dim hover:text-amber">
+                    Mi perfil
+                  </Link>
+                )}
                 {user ? (
                   <LogoutButton />
                 ) : (

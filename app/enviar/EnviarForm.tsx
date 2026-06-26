@@ -10,7 +10,7 @@ export default function EnviarForm({
   username: string;
 }) {
   const [mode, setMode] = useState<"autor" | "incognito">("autor");
-  const [category, setCategory] = useState<"sin_resolver" | "testimonio_real" | "archivado">("sin_resolver");
+  const [category, setCategory] = useState<"testimonio_real" | "leyenda_urbana" | "paranormal" | "creepypasta">("testimonio_real");
 
   return (
     <form action={action} className="flex flex-col gap-5">
@@ -88,9 +88,10 @@ export default function EnviarForm({
         </label>
         <div className="flex flex-col gap-2">
           {([
-            { value: "sin_resolver", label: "Sin resolver", desc: "Nunca encontré explicación para lo que ocurrió" },
-            { value: "testimonio_real", label: "Testimonio real", desc: "Confirmo que lo viví y puedo dar fe de ello" },
-            { value: "archivado", label: "Archivado", desc: "Ya tiene contexto o conclusión, pero lo comparto" },
+            { value: "testimonio_real", label: "Testimonio real",    desc: "Algo que viví o que alguien de confianza me contó — juro que es real" },
+            { value: "leyenda_urbana",  label: "Leyenda urbana",     desc: "Una historia que circula en mi ciudad o comunidad" },
+            { value: "paranormal",      label: "Paranormal",         desc: "Un encuentro o fenómeno que no tiene explicación lógica" },
+            { value: "creepypasta",     label: "Creepypasta original",desc: "Ficción de terror de mi autoría, escrita para asustar" },
           ] as const).map(({ value, label, desc }) => (
             <button
               key={value}
