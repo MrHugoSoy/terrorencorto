@@ -20,7 +20,8 @@ async function actualizarEstado(formData: FormData) {
     updates.video_url = video_url;
   }
 
-  await supabase.from("stories").update(updates).eq("id", id);
+  const { error } = await supabase.from("stories").update(updates).eq("id", id);
+  if (error) throw new Error(`Error al guardar: ${error.message}`);
   revalidatePath("/admin");
   revalidatePath("/");
   revalidatePath("/archivo");
