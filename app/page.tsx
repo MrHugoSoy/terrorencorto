@@ -98,7 +98,7 @@ export default async function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {stories?.map((story) => {
-            const estado = STATUS_OVERRIDE[story.status] ?? CATEGORY_STAMP[story.category] ?? CATEGORY_STAMP.sin_resolver;
+            const estado = STATUS_OVERRIDE[story.status] ?? CATEGORY_STAMP[story.category] ?? CATEGORY_STAMP.testimonio_real;
             const autor =
               story.mode === "incognito"
                 ? `Testigo anónimo #${String(story.anon_id).padStart(4, "0")}`
