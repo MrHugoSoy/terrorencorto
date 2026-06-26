@@ -32,7 +32,7 @@ export default async function RootLayout({
       <body>
         <div className="grain" />
         <header className="border-b border-border-dark">
-          <div className="max-w-325 mx-auto px-6 md:px-8 h-16 flex items-center justify-between">
+          <div className="max-w-325 mx-auto px-6 md:px-8 h-16 md:h-auto md:py-2 flex items-center justify-between">
             <Link href="/" className="shrink-0">
               <Image src="/logo.svg" alt="Terror en Corto" width={70} height={52} priority className="md:w-23.5 md:h-17.5" />
             </Link>
