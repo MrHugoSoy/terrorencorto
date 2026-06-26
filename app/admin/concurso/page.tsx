@@ -168,7 +168,7 @@ export default async function AdminConcursoPage() {
           return (
             <div key={contest.id} className="border border-border-dark">
               {/* Header concurso */}
-              <div className="bg-paper p-5 flex items-center justify-between gap-4 border-b border-border-dark">
+              <div className="bg-paper p-5 flex flex-col gap-4 border-b border-border-dark">
                 <div>
                   <span className="font-display text-lg">{contest.title}</span>
                   <span className="font-mono text-xs text-bone-dim ml-3">{contest.year}</span>
@@ -178,7 +178,7 @@ export default async function AdminConcursoPage() {
                     </span>
                   )}
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap gap-2">
                   <DeleteContestButton action={eliminarConcurso} id={contest.id} />
                   <form action={toggleConcurso}>
                     <input type="hidden" name="id" value={contest.id} />
