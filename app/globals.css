@@ -44,6 +44,7 @@ body {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 5;
   background: repeating-linear-gradient(
     0deg,
     rgba(63, 77, 58, 0.08) 0px,
@@ -57,10 +58,11 @@ body {
   100% { background-position: 0 40px; }
 }
 
-/* fantasma del hero: se funde con el fondo por el borde izquierdo */
+/* fantasma del hero: detrás del scanline, se funde con el fondo por el borde izquierdo */
 .hero-ghost {
-  -webkit-mask-image: linear-gradient(to left, black 55%, transparent 100%);
-  mask-image: linear-gradient(to left, black 55%, transparent 100%);
+  z-index: 1;
+  -webkit-mask-image: linear-gradient(to left, black 45%, transparent 100%);
+  mask-image: linear-gradient(to left, black 45%, transparent 100%);
 }
 
 /* glitch text-shadow en título hero */

@@ -48,7 +48,7 @@ export default async function Home() {
           width={360}
           height={360}
           priority
-          className="hero-ghost hidden md:block absolute z-0 top-1/2 right-4 lg:right-16 -translate-y-1/2 w-70 lg:w-100 h-auto opacity-70 pointer-events-none select-none"
+          className="hero-ghost hidden md:block absolute top-1/2 right-[8%] lg:right-[18%] -translate-y-1/2 w-120 lg:w-160 h-auto opacity-35 pointer-events-none select-none"
         />
         <div className="max-w-325 mx-auto px-8 relative z-10">
           <RecTimer />
