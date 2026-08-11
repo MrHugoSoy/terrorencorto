@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import RecTimer from "@/components/RecTimer";
@@ -41,6 +42,14 @@ export default async function Home() {
   return (
     <main>
       <section className="hero-scan border-b border-border-dark py-24 relative overflow-hidden">
+        <Image
+          src="/pngtree-spooky-ghost-image-for-halloween-or-other-scary-events-png-image_13664877.png"
+          alt=""
+          width={360}
+          height={360}
+          priority
+          className="hero-ghost hidden md:block absolute z-0 top-1/2 right-4 lg:right-16 -translate-y-1/2 w-70 lg:w-100 h-auto opacity-70 pointer-events-none select-none"
+        />
         <div className="max-w-325 mx-auto px-8 relative z-10">
           <RecTimer />
           <h1 className="title-glitch font-display text-6xl md:text-7xl leading-tight max-w-3xl">
