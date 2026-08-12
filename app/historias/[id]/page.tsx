@@ -1,7 +1,53 @@
+import type { Metadata } from "next";
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import ShareButtons from "@/components/ShareButtons";
+
+const DOMAIN = "https://terrorencorto.com";
+
+const getStory = cache(async (id: string) => {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("stories")
+    .select("id, title, content, location, mode, status, case_number, anon_id, created_at, video_url, profiles(username)")
+    .eq("id", id)
+    .single();
+  return data;
+});
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const story = await getStory(id);
+  if (!story) return {};
+
+  const description =
+    story.content.length > 155 ? `${story.content.slice(0, 155).trim()}…` : story.content;
+  const url = `${DOMAIN}/historias/${story.id}`;
+
+  return {
+    title: story.title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      title: story.title,
+      description,
+      url,
+      type: "article",
+      siteName: "Terror en Corto",
+    },
+    twitter: {
+      card: "summary",
+      title: story.title,
+      description,
+    },
+  };
+}
 
 export default async function HistoriaPage({
   params,
@@ -9,13 +55,7 @@ export default async function HistoriaPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const supabase = await createClient();
-
-  const { data: story } = await supabase
-    .from("stories")
-    .select("id, title, content, location, mode, status, case_number, anon_id, created_at, video_url, profiles(username)")
-    .eq("id", id)
-    .single();
+  const story = await getStory(id);
 
   if (!story) notFound();
 

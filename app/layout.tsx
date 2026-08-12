@@ -7,6 +7,7 @@ import LogoutButton from "@/components/LogoutButton";
 import MobileNav from "@/components/MobileNav";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://terrorencorto.com"),
   title: "Terror en Corto",
   description: "Archivo de testimonios reales, leyendas urbanas y encuentros sin explicación.",
 };
