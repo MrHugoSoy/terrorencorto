@@ -17,6 +17,11 @@ const STATUS_OVERRIDE: Record<string, { texto: string; clase: string }> = {
   usado_canal:        { texto: "narrado en canal", clase: "stamp-amber" },
 };
 
+function getYouTubeId(url: string): string | null {
+  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
+  return match ? match[1] : null;
+}
+
 export default async function Home() {
   const supabase = await createClient();
 
@@ -26,6 +31,12 @@ export default async function Home() {
     .in("status", ["publicado", "seleccionado_canal", "usado_canal"])
     .order("created_at", { ascending: false })
     .limit(9);
+
+  const { data: videos } = await supabase
+    .from("channel_videos")
+    .select("id, title, youtube_url, description, created_at")
+    .order("created_at", { ascending: false })
+    .limit(3);
 
   const { count: totalArchivadas } = await supabase
     .from("stories")
@@ -138,6 +149,47 @@ export default async function Home() {
           </div>
         )}
       </section>
+
+      {!!videos?.length && (
+        <section className="max-w-325 mx-auto px-8 pb-20">
+          <div className="flex justify-between items-baseline border-b border-border-dark pb-4 mb-10">
+            <h2 className="font-display text-2xl">Últimos videos</h2>
+            <span className="font-mono text-xs text-bone-dim">CANAL DE YOUTUBE</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {videos.map((video) => {
+              const videoId = getYouTubeId(video.youtube_url);
+              return (
+                <div key={video.id} className="bg-paper border border-border-dark">
+                  {videoId && (
+                    <div className="aspect-video">
+                      <iframe
+                        src={`https://www.youtube.com/embed/${videoId}`}
+                        className="w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                  )}
+                  <div className="p-5">
+                    <span className="font-semibold text-base leading-snug">{video.title}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-12 text-center">
+            <Link
+              href="/videos"
+              className="font-mono text-xs uppercase tracking-widest border border-border-dark text-bone-dim px-8 py-3 rounded hover:border-amber hover:text-amber"
+            >
+              Ver todos los videos →
+            </Link>
+          </div>
+        </section>
+      )}
     </main>
   );
 }

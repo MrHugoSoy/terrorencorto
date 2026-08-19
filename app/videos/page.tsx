@@ -1,18 +1,56 @@
+import type { Metadata } from "next";
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
+
+const DOMAIN = "https://terrorencorto.com";
+const DESCRIPTION =
+  "Las historias narradas del canal de Terror en Corto: testimonios reales, leyendas urbanas y encuentros sin explicación, directo desde YouTube.";
 
 function getYouTubeId(url: string): string | null {
   const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
   return match ? match[1] : null;
 }
 
-export default async function VideosPage() {
+const getVideos = cache(async () => {
   const supabase = await createClient();
-  const { data: videos } = await supabase
+  const { data } = await supabase
     .from("channel_videos")
     .select("id, title, youtube_url, description, created_at")
     .order("created_at", { ascending: false });
+  return data ?? [];
+});
+
+export async function generateMetadata(): Promise<Metadata> {
+  const videos = await getVideos();
+  const url = `${DOMAIN}/videos`;
+  const latestId = videos[0] ? getYouTubeId(videos[0].youtube_url) : null;
+  const ogImage = latestId ? `https://img.youtube.com/vi/${latestId}/hqdefault.jpg` : null;
+
+  return {
+    title: "Videos del canal",
+    description: DESCRIPTION,
+    alternates: { canonical: url },
+    openGraph: {
+      title: "Videos del canal — Terror en Corto",
+      description: DESCRIPTION,
+      url,
+      type: "website",
+      siteName: "Terror en Corto",
+      ...(ogImage ? { images: [{ url: ogImage, width: 480, height: 360 }] } : {}),
+    },
+    twitter: {
+      card: ogImage ? "summary_large_image" : "summary",
+      title: "Videos del canal — Terror en Corto",
+      description: DESCRIPTION,
+      ...(ogImage ? { images: [ogImage] } : {}),
+    },
+  };
+}
+
+export default async function VideosPage() {
+  const videos = await getVideos();
 
   return (
     <main className="max-w-325 mx-auto px-8 py-16">
@@ -22,7 +60,7 @@ export default async function VideosPage() {
         <p className="text-bone-dim">Las historias narradas, directo desde YouTube.</p>
       </div>
 
-      {!videos?.length ? (
+      {!videos.length ? (
         <p className="font-mono text-xs text-bone-dim py-8 text-center border border-border-dark rounded">
           Todavía no hay videos publicados.
         </p>
