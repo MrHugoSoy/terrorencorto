@@ -38,6 +38,23 @@ export default async function Home() {
     .order("created_at", { ascending: false })
     .limit(3);
 
+  const { data: pastContests } = await supabase
+    .from("contests")
+    .select("id, year, title, winner_entry_id, contest_entries!contest_id(id, title, youtube_url)")
+    .eq("is_published", true)
+    .eq("is_active", false)
+    .not("winner_entry_id", "is", null)
+    .order("year", { ascending: false })
+    .limit(3);
+
+  const ganadores = (pastContests ?? [])
+    .map((contest) => {
+      const entries = contest.contest_entries as { id: string; title: string; youtube_url: string }[] | null;
+      const winner = entries?.find((e) => e.id === contest.winner_entry_id);
+      return winner ? { contest, winner } : null;
+    })
+    .filter((g): g is { contest: NonNullable<typeof pastContests>[number]; winner: { id: string; title: string; youtube_url: string } } => g !== null);
+
   const { count: totalArchivadas } = await supabase
     .from("stories")
     .select("id", { count: "exact", head: true })
@@ -186,6 +203,48 @@ export default async function Home() {
               className="font-mono text-xs uppercase tracking-widest border border-border-dark text-bone-dim px-8 py-3 rounded hover:border-amber hover:text-amber"
             >
               Ver todos los videos →
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {ganadores.length > 0 && (
+        <section className="max-w-325 mx-auto px-8 pb-20">
+          <div className="flex justify-between items-baseline border-b border-border-dark pb-4 mb-10">
+            <h2 className="font-display text-2xl">Cortos ganadores</h2>
+            <span className="font-mono text-xs text-bone-dim">CONCURSOS ANTERIORES</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {ganadores.map(({ contest, winner }) => {
+              const videoId = getYouTubeId(winner.youtube_url);
+              return (
+                <div key={contest.id} className="bg-paper border border-amber">
+                  {videoId && (
+                    <div className="aspect-video">
+                      <iframe
+                        src={`https://www.youtube.com/embed/${videoId}`}
+                        className="w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                  )}
+                  <div className="p-5">
+                    <div className="font-mono text-xs text-amber mb-1">🏆 Ganador {contest.year}</div>
+                    <span className="font-semibold text-base leading-snug">{winner.title}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-12 text-center">
+            <Link
+              href="/concurso"
+              className="font-mono text-xs uppercase tracking-widest border border-border-dark text-bone-dim px-8 py-3 rounded hover:border-amber hover:text-amber"
+            >
+              Ver todos los concursos →
             </Link>
           </div>
         </section>
