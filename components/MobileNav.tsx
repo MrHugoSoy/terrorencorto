@@ -59,6 +59,7 @@ export default function MobileNav({ loggedIn }: { loggedIn: boolean }) {
               { href: "/", label: "Inicio" },
               { href: "/archivo", label: "Archivo" },
               { href: "/concurso", label: "Concurso" },
+              { href: "/videos", label: "Videos" },
               { href: "/enviar", label: "Enviar historia" },
             ].map(({ href, label }) => (
               <Link
@@ -85,6 +86,9 @@ export default function MobileNav({ loggedIn }: { loggedIn: boolean }) {
                 </Link>
                 <Link href="/admin/concurso" className="font-mono text-xl uppercase tracking-widest py-5 border-b border-border-dark text-blood hover:text-amber">
                   Concurso
+                </Link>
+                <Link href="/admin/videos" className="font-mono text-xl uppercase tracking-widest py-5 border-b border-border-dark text-blood hover:text-amber">
+                  Videos
                 </Link>
               </>
             )}

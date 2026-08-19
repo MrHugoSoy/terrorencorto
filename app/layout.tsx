@@ -42,9 +42,11 @@ export default async function RootLayout({
                 <Link href="/" className="hover:text-amber">Inicio</Link>
                 <Link href="/archivo" className="hover:text-amber">Archivo</Link>
                 <Link href="/concurso" className="hover:text-amber">Concurso</Link>
+                <Link href="/videos" className="hover:text-amber">Videos</Link>
                 <Link href="/enviar" className="hover:text-amber">Enviar historia</Link>
                 {user && <Link href="/admin" className="text-blood hover:text-amber">Admin</Link>}
                 {user && <Link href="/admin/concurso" className="text-blood hover:text-amber">Concurso admin</Link>}
+                {user && <Link href="/admin/videos" className="text-blood hover:text-amber">Videos admin</Link>}
               </nav>
               <div className="hidden md:flex items-center gap-4">
                 {user && (
