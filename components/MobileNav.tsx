@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export default function MobileNav({ loggedIn }: { loggedIn: boolean }) {
+export default function MobileNav({ loggedIn, isAdmin }: { loggedIn: boolean; isAdmin: boolean }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -78,18 +78,22 @@ export default function MobileNav({ loggedIn }: { loggedIn: boolean }) {
                 <Link href="/perfil" className={`font-mono text-xl uppercase tracking-widest py-5 border-b border-border-dark transition-colors ${pathname === "/perfil" ? "text-amber" : "hover:text-amber"}`}>
                   Mi perfil
                 </Link>
-                <div className="pt-6 pb-2">
-                  <span className="font-mono text-xs text-bone-dim uppercase tracking-widest">Admin</span>
-                </div>
-                <Link href="/admin" className="font-mono text-xl uppercase tracking-widest py-5 border-b border-border-dark text-blood hover:text-amber">
-                  Moderación
-                </Link>
-                <Link href="/admin/concurso" className="font-mono text-xl uppercase tracking-widest py-5 border-b border-border-dark text-blood hover:text-amber">
-                  Concurso
-                </Link>
-                <Link href="/admin/videos" className="font-mono text-xl uppercase tracking-widest py-5 border-b border-border-dark text-blood hover:text-amber">
-                  Videos
-                </Link>
+                {isAdmin && (
+                  <>
+                    <div className="pt-6 pb-2">
+                      <span className="font-mono text-xs text-bone-dim uppercase tracking-widest">Admin</span>
+                    </div>
+                    <Link href="/admin" className="font-mono text-xl uppercase tracking-widest py-5 border-b border-border-dark text-blood hover:text-amber">
+                      Moderación
+                    </Link>
+                    <Link href="/admin/concurso" className="font-mono text-xl uppercase tracking-widest py-5 border-b border-border-dark text-blood hover:text-amber">
+                      Concurso
+                    </Link>
+                    <Link href="/admin/videos" className="font-mono text-xl uppercase tracking-widest py-5 border-b border-border-dark text-blood hover:text-amber">
+                      Videos
+                    </Link>
+                  </>
+                )}
               </>
             )}
           </nav>

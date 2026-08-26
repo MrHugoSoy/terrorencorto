@@ -20,6 +20,11 @@ export default async function RootLayout({
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
+  const { data: profile } = user
+    ? await supabase.from("profiles").select("is_admin").eq("id", user.id).single()
+    : { data: null };
+  const isAdmin = !!profile?.is_admin;
+
   return (
     <html lang="es">
       <head>
@@ -44,9 +49,9 @@ export default async function RootLayout({
                 <Link href="/concurso" className="hover:text-amber">Concurso</Link>
                 <Link href="/videos" className="hover:text-amber">Videos</Link>
                 <Link href="/enviar" className="hover:text-amber">Enviar historia</Link>
-                {user && <Link href="/admin" className="text-blood hover:text-amber">Admin</Link>}
-                {user && <Link href="/admin/concurso" className="text-blood hover:text-amber">Concurso admin</Link>}
-                {user && <Link href="/admin/videos" className="text-blood hover:text-amber">Videos admin</Link>}
+                {isAdmin && <Link href="/admin" className="text-blood hover:text-amber">Admin</Link>}
+                {isAdmin && <Link href="/admin/concurso" className="text-blood hover:text-amber">Concurso admin</Link>}
+                {isAdmin && <Link href="/admin/videos" className="text-blood hover:text-amber">Videos admin</Link>}
               </nav>
               <div className="hidden md:flex items-center gap-4">
                 {user && (
@@ -65,7 +70,7 @@ export default async function RootLayout({
                   </Link>
                 )}
               </div>
-              <MobileNav loggedIn={!!user} />
+              <MobileNav loggedIn={!!user} isAdmin={isAdmin} />
             </div>
           </div>
         </header>
