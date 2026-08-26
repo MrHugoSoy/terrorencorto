@@ -12,7 +12,7 @@
   --color-border-dark: #3a342c;
   --color-static: #3f4d3a;
 
-  --font-display: "Special Elite", monospace;
+  --font-display: "Archivo Black", sans-serif;
   --font-body: "Crimson Pro", serif;
   --font-mono: "IBM Plex Mono", monospace;
 }
@@ -55,11 +55,6 @@ body {
 @keyframes scan {
   0%   { background-position: 0 0; }
   100% { background-position: 0 40px; }
-}
-
-/* glitch text-shadow en título hero */
-.title-glitch {
-  text-shadow: 2px 0 0 var(--color-blood-deep), -1px 0 0 var(--color-static);
 }
 
 .stamp {

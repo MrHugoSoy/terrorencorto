@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import RecTimer from "@/components/RecTimer";
 import ShareButtons from "@/components/ShareButtons";
 import VideoCard from "@/components/VideoCard";
+import { Send, Play, FileText, Eye, Fingerprint, ArrowRight } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -67,8 +68,8 @@ export default async function Home() {
       <section className="hero-scan border-b border-border-dark py-24 relative overflow-hidden">
         <div className="max-w-325 mx-auto px-8 relative z-10">
           <RecTimer />
-          <h1 className="title-glitch font-display text-6xl md:text-7xl leading-tight max-w-3xl">
-            Lo que viste<br />no se va a olvidar.
+          <h1 className="font-display text-6xl md:text-7xl leading-tight max-w-3xl">
+            Lo que viste<br />no se va a <span className="text-blood">olvidar.</span>
           </h1>
           <p className="text-bone-dim text-lg max-w-md mt-6 leading-relaxed">
             Un archivo de testimonios reales y encuentros sin explicación. Las mejores historias se narran en el canal.
@@ -76,35 +77,53 @@ export default async function Home() {
           <div className="flex gap-3 mt-9">
             <Link
               href="/enviar"
-              className="font-mono text-sm tracking-wide px-6 py-3 rounded bg-blood-deep border border-blood hover:bg-blood"
+              className="flex items-center gap-2 font-mono text-sm tracking-wide px-6 py-3 rounded bg-blood-deep border border-blood hover:bg-blood"
             >
+              <Send size={16} />
               Comparte tu historia
             </Link>
             <a
               href="https://www.youtube.com/@terrorencorto"
               target="_blank"
-              className="font-mono text-sm tracking-wide px-6 py-3 rounded border border-border-dark text-bone-dim hover:border-amber hover:text-amber"
+              className="flex items-center gap-2 font-mono text-sm tracking-wide px-6 py-3 rounded border border-border-dark text-bone-dim hover:border-amber hover:text-amber"
             >
-              Ver el canal →
+              <Play size={16} />
+              Ver el canal
             </a>
           </div>
         </div>
       </section>
 
       <section className="border-b border-border-dark">
-        <div className="max-w-325 mx-auto px-8 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border-dark">
-          <div className="py-7">
-            <div className="font-mono text-3xl text-amber">{totalArchivadas ?? 0}</div>
-            <div className="font-mono text-xs uppercase tracking-wide text-bone-dim mt-1">historias archivadas</div>
+        <div className="max-w-325 mx-auto px-8 grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-border-dark">
+          <div className="py-7 flex items-start gap-3">
+            <FileText className="text-amber shrink-0 mt-1" size={20} />
+            <div>
+              <div className="font-mono text-3xl text-amber">{totalArchivadas ?? 0}</div>
+              <div className="font-mono text-xs uppercase tracking-wide text-bone-dim mt-1">historias archivadas</div>
+            </div>
           </div>
-          <div className="py-7 md:px-8">
-            <div className="font-mono text-3xl text-amber">{enviadasSemana ?? 0}</div>
-            <div className="font-mono text-xs uppercase tracking-wide text-bone-dim mt-1">enviadas esta semana</div>
+          <div className="py-7 md:px-8 flex items-start gap-3">
+            <Send className="text-amber shrink-0 mt-1" size={20} />
+            <div>
+              <div className="font-mono text-3xl text-amber">{enviadasSemana ?? 0}</div>
+              <div className="font-mono text-xs uppercase tracking-wide text-bone-dim mt-1">enviadas esta semana</div>
+            </div>
           </div>
-          <div className="py-7 md:px-8">
-            <div className="font-mono text-3xl text-amber">9,4k</div>
-            <div className="font-mono text-xs uppercase tracking-wide text-bone-dim mt-1">testigos leyendo</div>
+          <div className="py-7 md:px-8 flex items-start gap-3">
+            <Eye className="text-amber shrink-0 mt-1" size={20} />
+            <div>
+              <div className="font-mono text-3xl text-amber">9,4k</div>
+              <div className="font-mono text-xs uppercase tracking-wide text-bone-dim mt-1">testigos leyendo</div>
+            </div>
           </div>
+          <Link href="/enviar" className="py-7 md:px-8 flex items-start gap-3 group hover:bg-paper transition-colors">
+            <Fingerprint className="text-blood shrink-0 mt-1" size={20} />
+            <div>
+              <div className="font-mono text-xs uppercase tracking-wide text-bone">¿Tienes una historia que contar?</div>
+              <div className="font-mono text-xs text-blood mt-1 group-hover:text-amber">Envíanos tu testimonio de terror real →</div>
+            </div>
+          </Link>
         </div>
       </section>
 
@@ -155,9 +174,9 @@ export default async function Home() {
           <div className="mt-12 text-center">
             <Link
               href="/archivo"
-              className="font-mono text-xs uppercase tracking-widest border border-border-dark text-bone-dim px-8 py-3 rounded hover:border-amber hover:text-amber"
+              className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest border border-blood text-blood px-8 py-3 rounded hover:border-amber hover:text-amber"
             >
-              Ver todas las historias →
+              Ver todas las historias <ArrowRight size={14} />
             </Link>
           </div>
         )}
@@ -184,9 +203,9 @@ export default async function Home() {
           <div className="mt-12 text-center">
             <Link
               href="/videos"
-              className="font-mono text-xs uppercase tracking-widest border border-border-dark text-bone-dim px-8 py-3 rounded hover:border-amber hover:text-amber"
+              className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest border border-blood text-blood px-8 py-3 rounded hover:border-amber hover:text-amber"
             >
-              Ver todos los videos →
+              Ver todos los videos <ArrowRight size={14} />
             </Link>
           </div>
         </section>
@@ -215,9 +234,9 @@ export default async function Home() {
           <div className="mt-12 text-center">
             <Link
               href="/concurso"
-              className="font-mono text-xs uppercase tracking-widest border border-border-dark text-bone-dim px-8 py-3 rounded hover:border-amber hover:text-amber"
+              className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest border border-blood text-blood px-8 py-3 rounded hover:border-amber hover:text-amber"
             >
-              Ver todos los concursos →
+              Ver todos los concursos <ArrowRight size={14} />
             </Link>
           </div>
         </section>

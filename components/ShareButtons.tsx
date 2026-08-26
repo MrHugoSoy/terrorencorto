@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Share2 } from "lucide-react";
 
 const DOMAIN = "https://terrorencorto.com";
 
@@ -53,9 +54,9 @@ export default function ShareButtons({
       <button
         onClick={handleShare}
         aria-label="Compartir enlace"
-        className={`${base} border-border-dark text-bone-dim hover:border-amber hover:text-amber`}
+        className={`${base} border-border-dark text-bone-dim hover:border-amber hover:text-amber flex items-center gap-1.5`}
       >
-        {copied ? "¡Copiado!" : size === "md" ? "Copiar enlace" : "↗"}
+        {copied ? "¡Copiado!" : size === "md" ? "Copiar enlace" : <Share2 size={12} />}
       </button>
     </div>
   );
