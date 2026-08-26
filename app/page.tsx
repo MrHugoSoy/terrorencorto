@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import RecTimer from "@/components/RecTimer";
 import ShareButtons from "@/components/ShareButtons";
+import VideoCard from "@/components/VideoCard";
 
 export const dynamic = "force-dynamic";
 
@@ -16,11 +17,6 @@ const STATUS_OVERRIDE: Record<string, { texto: string; clase: string }> = {
   seleccionado_canal: { texto: "en producción",   clase: "stamp-amber" },
   usado_canal:        { texto: "narrado en canal", clase: "stamp-amber" },
 };
-
-function getYouTubeId(url: string): string | null {
-  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
-  return match ? match[1] : null;
-}
 
 export default async function Home() {
   const supabase = await createClient();
@@ -175,26 +171,14 @@ export default async function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {videos.map((video) => {
-              const videoId = getYouTubeId(video.youtube_url);
-              return (
-                <div key={video.id} className="bg-paper border border-border-dark">
-                  {videoId && (
-                    <div className="aspect-video">
-                      <iframe
-                        src={`https://www.youtube.com/embed/${videoId}`}
-                        className="w-full h-full"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
-                    </div>
-                  )}
-                  <div className="p-5">
-                    <span className="font-semibold text-base leading-snug">{video.title}</span>
-                  </div>
-                </div>
-              );
-            })}
+            {videos.map((video) => (
+              <VideoCard
+                key={video.id}
+                youtubeUrl={video.youtube_url}
+                title={video.title}
+                shareUrl={video.youtube_url}
+              />
+            ))}
           </div>
 
           <div className="mt-12 text-center">
@@ -216,27 +200,16 @@ export default async function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {ganadores.map(({ contest, winner }) => {
-              const videoId = getYouTubeId(winner.youtube_url);
-              return (
-                <div key={contest.id} className="bg-paper border border-amber">
-                  {videoId && (
-                    <div className="aspect-video">
-                      <iframe
-                        src={`https://www.youtube.com/embed/${videoId}`}
-                        className="w-full h-full"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
-                    </div>
-                  )}
-                  <div className="p-5">
-                    <div className="font-mono text-xs text-amber mb-1">🏆 Ganador {contest.year}</div>
-                    <span className="font-semibold text-base leading-snug">{winner.title}</span>
-                  </div>
-                </div>
-              );
-            })}
+            {ganadores.map(({ contest, winner }) => (
+              <VideoCard
+                key={contest.id}
+                youtubeUrl={winner.youtube_url}
+                title={winner.title}
+                shareUrl={winner.youtube_url}
+                winner
+                badge={{ texto: `🏆 Ganador ${contest.year}`, clase: "stamp-amber" }}
+              />
+            ))}
           </div>
 
           <div className="mt-12 text-center">

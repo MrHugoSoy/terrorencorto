@@ -8,13 +8,15 @@ export default function ShareButtons({
   id,
   title,
   size = "sm",
+  url: urlProp,
 }: {
-  id: string;
+  id?: string;
   title: string;
   size?: "sm" | "md";
+  url?: string;
 }) {
   const [copied, setCopied] = useState(false);
-  const url = `${DOMAIN}/historias/${id}`;
+  const url = urlProp ?? `${DOMAIN}/historias/${id}`;
   const text = `"${title}" en Terror en Corto`;
   const waHref = `https://wa.me/?text=${encodeURIComponent(text + "\n" + url)}`;
 

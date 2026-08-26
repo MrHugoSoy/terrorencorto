@@ -1,17 +1,14 @@
 import type { Metadata } from "next";
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
+import { getYouTubeId } from "@/lib/youtube";
+import VideoCard from "@/components/VideoCard";
 
 export const dynamic = "force-dynamic";
 
 const DOMAIN = "https://terrorencorto.com";
 const DESCRIPTION =
   "Las historias narradas del canal de Terror en Corto: testimonios reales, leyendas urbanas y encuentros sin explicación, directo desde YouTube.";
-
-function getYouTubeId(url: string): string | null {
-  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
-  return match ? match[1] : null;
-}
 
 const getVideos = cache(async () => {
   const supabase = await createClient();
@@ -66,29 +63,15 @@ export default async function VideosPage() {
         </p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {videos.map((video) => {
-            const videoId = getYouTubeId(video.youtube_url);
-            return (
-              <div key={video.id} className="bg-paper border border-border-dark">
-                {videoId && (
-                  <div className="aspect-video">
-                    <iframe
-                      src={`https://www.youtube.com/embed/${videoId}`}
-                      className="w-full h-full"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  </div>
-                )}
-                <div className="p-5">
-                  <span className="font-semibold text-lg">{video.title}</span>
-                  {video.description && (
-                    <p className="text-bone-dim text-sm leading-relaxed mt-2">{video.description}</p>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+          {videos.map((video) => (
+            <VideoCard
+              key={video.id}
+              youtubeUrl={video.youtube_url}
+              title={video.title}
+              description={video.description}
+              shareUrl={video.youtube_url}
+            />
+          ))}
         </div>
       )}
     </main>

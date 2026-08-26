@@ -1,13 +1,9 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import VoteButton from "./VoteButton";
+import VideoCard from "@/components/VideoCard";
 
 export const dynamic = "force-dynamic";
-
-function getYouTubeId(url: string): string | null {
-  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
-  return match ? match[1] : null;
-}
 
 export default async function ConcursoPage() {
   const supabase = await createClient();
@@ -70,44 +66,29 @@ export default async function ConcursoPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {sortedEntries(activeContest.contest_entries).map((entry) => {
-              const videoId = getYouTubeId(entry.youtube_url);
-              return (
-                <div key={entry.id} className="bg-paper border border-border-dark">
-                  {videoId && (
-                    <div className="aspect-video">
-                      <iframe
-                        src={`https://www.youtube.com/embed/${videoId}`}
-                        className="w-full h-full"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
-                    </div>
-                  )}
-                  <div className="p-5">
-                    <div className="flex items-start gap-3 mb-2">
-                      <span className="font-semibold text-lg">{entry.title}</span>
-                    </div>
-                    {entry.description && (
-                      <p className="text-bone-dim text-sm leading-relaxed mb-4">{entry.description}</p>
-                    )}
-                    {user ? (
-                      <VoteButton
-                        entryId={entry.id}
-                        contestId={activeContest.id}
-                        hasVoted={!!myVote}
-                        votedForThisEntry={myVote?.entry_id === entry.id}
-                        isActive={!!isOpen}
-                      />
-                    ) : isOpen ? (
-                      <Link href="/login" className="font-mono text-xs px-4 py-2 rounded border border-border-dark text-bone-dim hover:border-amber hover:text-amber">
-                        Inicia sesión para votar
-                      </Link>
-                    ) : null}
-                  </div>
-                </div>
-              );
-            })}
+            {sortedEntries(activeContest.contest_entries).map((entry) => (
+              <VideoCard
+                key={entry.id}
+                youtubeUrl={entry.youtube_url}
+                title={entry.title}
+                description={entry.description}
+                shareUrl={entry.youtube_url}
+              >
+                {user ? (
+                  <VoteButton
+                    entryId={entry.id}
+                    contestId={activeContest.id}
+                    hasVoted={!!myVote}
+                    votedForThisEntry={myVote?.entry_id === entry.id}
+                    isActive={!!isOpen}
+                  />
+                ) : isOpen ? (
+                  <Link href="/login" className="font-mono text-xs px-4 py-2 rounded border border-border-dark text-bone-dim hover:border-amber hover:text-amber">
+                    Inicia sesión para votar
+                  </Link>
+                ) : null}
+              </VideoCard>
+            ))}
           </div>
         </section>
       ) : (
@@ -142,25 +123,16 @@ export default async function ConcursoPage() {
                     {[...(contest.contest_entries ?? [])].sort((a: { id: string }, b: { id: string }) =>
                       a.id === contest.winner_entry_id ? -1 : b.id === contest.winner_entry_id ? 1 : 0
                     ).map((entry: { id: string; title: string; youtube_url: string }) => {
-                      const videoId = getYouTubeId(entry.youtube_url);
                       const isWinner = entry.id === contest.winner_entry_id;
                       return (
-                        <div key={entry.id} className={`bg-paper border ${isWinner ? "border-amber" : "border-border-dark"}`}>
-                          {videoId && (
-                            <div className="aspect-video">
-                              <iframe
-                                src={`https://www.youtube.com/embed/${videoId}`}
-                                className="w-full h-full"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                              />
-                            </div>
-                          )}
-                          <div className="p-4 flex items-center gap-2">
-                            {isWinner && <span className="font-mono text-xs text-amber">🏆</span>}
-                            <span className="font-semibold">{entry.title}</span>
-                          </div>
-                        </div>
+                        <VideoCard
+                          key={entry.id}
+                          youtubeUrl={entry.youtube_url}
+                          title={entry.title}
+                          shareUrl={entry.youtube_url}
+                          winner={isWinner}
+                          badge={isWinner ? { texto: "🏆 Ganador", clase: "stamp-amber" } : undefined}
+                        />
                       );
                     })}
                   </div>
