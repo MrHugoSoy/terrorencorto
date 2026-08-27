@@ -58,6 +58,19 @@ body {
   .flicker { animation: none; }
 }
 
+/* el fantasma aparece un instante justo en el parpadeo más oscuro */
+.ghost-flash {
+  opacity: 0;
+  animation: ghost-flash 7s infinite;
+}
+@keyframes ghost-flash {
+  0%, 96.5%, 98%, 100% { opacity: 0; }
+  97%, 97.5% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ghost-flash { animation: none; opacity: 0; }
+}
+
 /* scan lines animadas en el hero */
 .hero-scan::before {
   content: "";
