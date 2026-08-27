@@ -77,7 +77,7 @@ export default async function Home() {
         </div>
         <div className="max-w-325 mx-auto px-8 py-24 relative z-10">
           <RecTimer />
-          <h1 className="font-display text-6xl md:text-7xl leading-tight max-w-3xl">
+          <h1 className="font-typewriter text-5xl md:text-6xl leading-tight max-w-3xl">
             Lo que viste<br />no se va a <span className="text-blood">olvidar.</span>
           </h1>
           <p className="text-bone-dim text-lg max-w-md mt-6 leading-relaxed">

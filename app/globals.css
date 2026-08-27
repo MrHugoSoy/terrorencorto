@@ -27,6 +27,11 @@ body {
   font-weight: 800;
 }
 
+.font-typewriter {
+  font-family: "Special Elite", monospace;
+  font-weight: 400;
+}
+
 /* grain overlay fijo */
 .grain {
   position: fixed;
