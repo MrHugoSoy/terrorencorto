@@ -43,32 +43,48 @@ body {
   mix-blend-mode: overlay;
 }
 
-/* parpadeo de foco que falla, en la imagen del hero */
+/* parpadeo de foco que falla, en la imagen del hero — ciclo de 21s
+   (3 repeticiones del mismo parpadeo de 7s) */
 .flicker {
-  animation: flicker 7s infinite;
+  animation: flicker 21s infinite;
 }
 @keyframes flicker {
-  0%, 92%, 94%, 96%, 100% { filter: brightness(1) contrast(1); }
-  93% { filter: brightness(0.35) contrast(1.05); }
-  95% { filter: brightness(0.55) contrast(1.05); }
-  97% { filter: brightness(0.15) contrast(1.1); }
-  98% { filter: brightness(0.9) contrast(1); }
+  0%, 30.667%, 32%, 33.333%,
+  64%, 65.333%, 66.667%,
+  97.333%, 98.667%, 100% { filter: brightness(1) contrast(1); }
+  31%, 64.333%, 97.667% { filter: brightness(0.35) contrast(1.05); }
+  31.667%, 65%, 98.333% { filter: brightness(0.55) contrast(1.05); }
+  32.333%, 65.667%, 99% { filter: brightness(0.15) contrast(1.1); }
+  32.667%, 66%, 99.333% { filter: brightness(0.9) contrast(1); }
 }
 @media (prefers-reduced-motion: reduce) {
   .flicker { animation: none; }
 }
 
-/* el fantasma aparece un instante justo en el parpadeo más oscuro */
+/* el fantasma sentado aparece en los dos primeros parpadeos */
 .ghost-flash {
   opacity: 0;
-  animation: ghost-flash 7s infinite;
+  animation: ghost-flash 21s infinite;
 }
 @keyframes ghost-flash {
-  0%, 96.5%, 98%, 100% { opacity: 0; }
-  97%, 97.5% { opacity: 1; }
+  0%, 32.167%, 32.667%, 65.5%, 66%, 100% { opacity: 0; }
+  32.333%, 32.5%, 65.667%, 65.833% { opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
   .ghost-flash { animation: none; opacity: 0; }
+}
+
+/* el susto fuerte reemplaza al fantasma en el tercer parpadeo */
+.susto-flash {
+  opacity: 0;
+  animation: susto-flash 21s infinite;
+}
+@keyframes susto-flash {
+  0%, 98.833%, 99.333%, 100% { opacity: 0; }
+  99%, 99.167% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .susto-flash { animation: none; opacity: 0; }
 }
 
 /* scan lines animadas en el hero */

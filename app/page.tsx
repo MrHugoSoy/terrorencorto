@@ -71,6 +71,7 @@ export default async function Home() {
         <div className="absolute inset-0">
           <Image src="/fondo.webp" alt="" fill priority className="object-cover flicker" />
           <Image src="/fondoghost.webp" alt="" fill className="object-cover ghost-flash" />
+          <Image src="/fondosusto.webp" alt="" fill className="object-cover susto-flash" />
           <div className="absolute inset-0 bg-linear-to-r from-void via-void/80 to-void/30" />
           <div className="absolute inset-0 bg-linear-to-t from-void via-transparent to-void/40" />
         </div>
