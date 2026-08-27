@@ -69,7 +69,7 @@ export default async function Home() {
     <main>
       <section className="hero-scan border-b border-border-dark relative overflow-hidden">
         <div className="absolute inset-0">
-          <Image src="/fondo.webp" alt="" fill priority className="object-cover" />
+          <Image src="/fondo.webp" alt="" fill priority className="object-cover flicker" />
           <div className="absolute inset-0 bg-linear-to-r from-void via-void/80 to-void/30" />
           <div className="absolute inset-0 bg-linear-to-t from-void via-transparent to-void/40" />
         </div>

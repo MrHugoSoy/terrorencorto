@@ -43,6 +43,21 @@ body {
   mix-blend-mode: overlay;
 }
 
+/* parpadeo de foco que falla, en la imagen del hero */
+.flicker {
+  animation: flicker 7s infinite;
+}
+@keyframes flicker {
+  0%, 92%, 94%, 96%, 100% { filter: brightness(1) contrast(1); }
+  93% { filter: brightness(0.35) contrast(1.05); }
+  95% { filter: brightness(0.55) contrast(1.05); }
+  97% { filter: brightness(0.15) contrast(1.1); }
+  98% { filter: brightness(0.9) contrast(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flicker { animation: none; }
+}
+
 /* scan lines animadas en el hero */
 .hero-scan::before {
   content: "";
