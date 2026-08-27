@@ -54,7 +54,7 @@ export default async function RegistroPage({
             required
             pattern="[a-z0-9_]{3,20}"
             title="Solo minúsculas, números y guión bajo, 3-20 caracteres"
-            placeholder="como_quieres_firmar"
+            placeholder="testigo07"
             className="w-full bg-void border border-border-dark rounded px-3 py-3 text-bone focus:outline-none focus:border-amber"
           />
         </div>
