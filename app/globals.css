@@ -77,12 +77,13 @@ body {
 /* el susto fuerte reemplaza al fantasma en el tercer parpadeo */
 .susto-flash {
   opacity: 0;
-  /* fondosusto.webp es una toma con otro encuadre — se reescala y
-     reposiciona para que la puerta y la silla coincidan lo más
-     posible con fondo.webp/fondoghost.webp */
+  /* fondosusto.webp es una toma con otro encuadre — nunca calza
+     pixel a pixel con fondo.webp, así que en vez de un fundido (que
+     se ve como temblor por el desajuste) el cambio es un corte
+     instantáneo: steps(1) hace que salte de 0 a 1 sin mezclar frames */
   transform: scale(1.18) translate(30px, 28px);
   transform-origin: top left;
-  animation: susto-flash 21s infinite;
+  animation: susto-flash 21s steps(1, end) infinite;
 }
 @keyframes susto-flash {
   0%, 98.833%, 99.333%, 100% { opacity: 0; }
