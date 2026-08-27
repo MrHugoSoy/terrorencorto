@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import ShareButtons from "@/components/ShareButtons";
+import Avatar from "@/components/Avatar";
 
 const DOMAIN = "https://terrorencorto.com";
 
@@ -11,7 +12,7 @@ const getStory = cache(async (id: string) => {
   const supabase = await createClient();
   const { data } = await supabase
     .from("stories")
-    .select("id, title, content, location, mode, status, case_number, anon_id, created_at, video_url, profiles(username)")
+    .select("id, title, content, location, mode, status, case_number, anon_id, created_at, video_url, profiles(username, avatar_url)")
     .eq("id", id)
     .single();
   return data;
@@ -59,10 +60,11 @@ export default async function HistoriaPage({
 
   if (!story) notFound();
 
+  const profile = story.profiles as { username?: string; avatar_url?: string } | null;
   const autor =
     story.mode === "incognito"
       ? `Testigo anónimo #${String(story.anon_id).padStart(4, "0")}`
-      : `@${(story.profiles as { username?: string } | null)?.username ?? "anonimo"}`;
+      : `@${profile?.username ?? "anonimo"}`;
 
   return (
     <main className="max-w-2xl mx-auto px-8 py-16">
@@ -72,7 +74,10 @@ export default async function HistoriaPage({
 
       <div className="flex justify-between items-center mt-8 mb-4 font-mono text-xs text-bone-dim">
         <span>{story.case_number}</span>
-        <span>{autor} · {story.location || "ubicación desconocida"}</span>
+        <span className="flex items-center gap-2">
+          {story.mode !== "incognito" && <Avatar src={profile?.avatar_url} size={20} />}
+          {autor} · {story.location || "ubicación desconocida"}
+        </span>
       </div>
 
       <h1 className="font-display text-3xl leading-tight mb-8">{story.title}</h1>

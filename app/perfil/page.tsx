@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import AvatarUpload from "@/components/AvatarUpload";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +27,7 @@ export default async function PerfilPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("username, created_at")
+    .select("username, created_at, avatar_url")
     .eq("id", user.id)
     .single();
 
@@ -44,8 +45,9 @@ export default async function PerfilPage() {
     <main className="max-w-2xl mx-auto px-6 py-16">
       <div className="border-b border-border-dark pb-8 mb-10">
         <p className="font-mono text-xs text-blood uppercase tracking-widest mb-2">Mi expediente</p>
-        <h1 className="font-display text-3xl mb-1">@{profile?.username}</h1>
-        <p className="font-mono text-xs text-bone-dim">
+        <h1 className="font-display text-3xl mb-6">@{profile?.username}</h1>
+        <AvatarUpload userId={user.id} avatarUrl={profile?.avatar_url ?? null} />
+        <p className="font-mono text-xs text-bone-dim mt-6">
           {stories?.length ?? 0} historias enviadas · {publicadas} publicadas
         </p>
       </div>

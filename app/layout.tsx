@@ -5,6 +5,7 @@ import "./globals.css";
 import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "@/components/LogoutButton";
 import MobileNav from "@/components/MobileNav";
+import Avatar from "@/components/Avatar";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://terrorencorto.com"),
@@ -21,7 +22,7 @@ export default async function RootLayout({
   const { data: { user } } = await supabase.auth.getUser();
 
   const { data: profile } = user
-    ? await supabase.from("profiles").select("is_admin").eq("id", user.id).single()
+    ? await supabase.from("profiles").select("is_admin, avatar_url").eq("id", user.id).single()
     : { data: null };
   const isAdmin = !!profile?.is_admin;
 
@@ -55,8 +56,8 @@ export default async function RootLayout({
               </nav>
               <div className="hidden md:flex items-center gap-4">
                 {user && (
-                  <Link href="/perfil" className="font-mono text-xs uppercase tracking-wider text-bone-dim hover:text-amber">
-                    Mi perfil
+                  <Link href="/perfil" aria-label="Mi perfil" className="opacity-80 hover:opacity-100">
+                    <Avatar src={profile?.avatar_url} size={28} />
                   </Link>
                 )}
                 {user ? (
@@ -70,7 +71,7 @@ export default async function RootLayout({
                   </Link>
                 )}
               </div>
-              <MobileNav loggedIn={!!user} isAdmin={isAdmin} />
+              <MobileNav loggedIn={!!user} isAdmin={isAdmin} avatarUrl={profile?.avatar_url ?? null} />
             </div>
           </div>
         </header>

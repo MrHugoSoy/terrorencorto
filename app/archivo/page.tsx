@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import ShareButtons from "@/components/ShareButtons";
+import Avatar from "@/components/Avatar";
 
 export const dynamic = "force-dynamic";
 
@@ -38,7 +39,7 @@ export default async function ArchivoPage({
 
   let query = supabase
     .from("stories")
-    .select("id, title, content, location, mode, status, category, case_number, anon_id, created_at, profiles(username)", { count: "exact" })
+    .select("id, title, content, location, mode, status, category, case_number, anon_id, created_at, profiles(username, avatar_url)", { count: "exact" })
     .in("status", ["publicado", "seleccionado_canal", "usado_canal"])
     .order("created_at", { ascending: false });
 
@@ -102,10 +103,11 @@ export default async function ArchivoPage({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {stories?.map((story) => {
           const stamp = STATUS_OVERRIDE[story.status] ?? CATEGORY_STAMP[story.category] ?? CATEGORY_STAMP.testimonio_real;
+          const profile = story.profiles as { username?: string; avatar_url?: string } | null;
           const autor =
             story.mode === "incognito"
               ? `Testigo anónimo #${String(story.anon_id).padStart(4, "0")}`
-              : `@${(story.profiles as { username?: string } | null)?.username ?? "anonimo"}`;
+              : `@${profile?.username ?? "anonimo"}`;
 
           return (
             <div key={story.id} className="bg-paper border border-border-dark hover:border-amber transition-colors flex flex-col">
@@ -120,7 +122,8 @@ export default async function ArchivoPage({
                 </p>
               </Link>
               <div className="px-6 pb-4 border-t border-border-dark pt-3 flex items-center justify-between">
-                <span className="font-mono text-xs text-bone-dim truncate mr-3">
+                <span className="flex items-center gap-2 font-mono text-xs text-bone-dim truncate mr-3">
+                  {story.mode !== "incognito" && <Avatar src={profile?.avatar_url} size={20} />}
                   {autor} · {story.location || "ubicación desconocida"}
                 </span>
                 <ShareButtons id={story.id} title={story.title} />

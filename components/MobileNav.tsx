@@ -4,8 +4,17 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import Avatar from "@/components/Avatar";
 
-export default function MobileNav({ loggedIn, isAdmin }: { loggedIn: boolean; isAdmin: boolean }) {
+export default function MobileNav({
+  loggedIn,
+  isAdmin,
+  avatarUrl,
+}: {
+  loggedIn: boolean;
+  isAdmin: boolean;
+  avatarUrl: string | null;
+}) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -75,7 +84,8 @@ export default function MobileNav({ loggedIn, isAdmin }: { loggedIn: boolean; is
 
             {loggedIn && (
               <>
-                <Link href="/perfil" className={`font-mono text-xl uppercase tracking-widest py-5 border-b border-border-dark transition-colors ${pathname === "/perfil" ? "text-amber" : "hover:text-amber"}`}>
+                <Link href="/perfil" className={`flex items-center gap-3 font-mono text-xl uppercase tracking-widest py-5 border-b border-border-dark transition-colors ${pathname === "/perfil" ? "text-amber" : "hover:text-amber"}`}>
+                  <Avatar src={avatarUrl} size={32} />
                   Mi perfil
                 </Link>
                 {isAdmin && (
