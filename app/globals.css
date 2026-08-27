@@ -85,9 +85,8 @@ body {
   /* fondosusto.webp es una toma con otro encuadre — nunca calza
      pixel a pixel con fondo.webp, así que en vez de un fundido (que
      se ve como temblor por el desajuste) el cambio es un corte
-     instantáneo: steps(1) hace que salte de 0 a 1 sin mezclar frames */
-  transform: scale(1.18) translate(30px, 28px);
-  transform-origin: top left;
+     instantáneo: steps(1) hace que salte de 0 a 1 sin mezclar frames.
+     Se muestra al mismo tamaño (sin zoom) que las otras dos fotos. */
   animation: susto-flash 21s steps(1, end) infinite;
 }
 @keyframes susto-flash {
