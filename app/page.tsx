@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import RecTimer from "@/components/RecTimer";
 import ShareButtons from "@/components/ShareButtons";
@@ -65,31 +66,37 @@ export default async function Home() {
 
   return (
     <main>
-      <section className="hero-scan border-b border-border-dark py-24 relative overflow-hidden">
-        <div className="max-w-325 mx-auto px-8 relative z-10">
-          <RecTimer />
-          <h1 className="font-display text-6xl md:text-7xl leading-tight max-w-3xl">
-            Lo que viste<br />no se va a <span className="text-blood">olvidar.</span>
-          </h1>
-          <p className="text-bone-dim text-lg max-w-md mt-6 leading-relaxed">
-            Un archivo de testimonios reales y encuentros sin explicación. Las mejores historias se narran en el canal.
-          </p>
-          <div className="flex gap-3 mt-9">
-            <Link
-              href="/enviar"
-              className="flex items-center gap-2 font-mono text-sm tracking-wide px-6 py-3 rounded bg-blood-deep border border-blood hover:bg-blood"
-            >
-              <Send size={16} />
-              Comparte tu historia
-            </Link>
-            <a
-              href="https://www.youtube.com/@terrorencorto"
-              target="_blank"
-              className="flex items-center gap-2 font-mono text-sm tracking-wide px-6 py-3 rounded border border-border-dark text-bone-dim hover:border-amber hover:text-amber"
-            >
-              <Play size={16} />
-              Ver el canal
-            </a>
+      <section className="hero-scan border-b border-border-dark relative overflow-hidden">
+        <div className="max-w-325 mx-auto px-8 py-24 grid md:grid-cols-2 gap-12 items-center">
+          <div className="relative z-10">
+            <RecTimer />
+            <h1 className="font-display text-6xl md:text-7xl leading-tight max-w-3xl">
+              Lo que viste<br />no se va a <span className="text-blood">olvidar.</span>
+            </h1>
+            <p className="text-bone-dim text-lg max-w-md mt-6 leading-relaxed">
+              Un archivo de testimonios reales y encuentros sin explicación. Las mejores historias se narran en el canal.
+            </p>
+            <div className="flex gap-3 mt-9">
+              <Link
+                href="/enviar"
+                className="flex items-center gap-2 font-mono text-sm tracking-wide px-6 py-3 rounded bg-blood-deep border border-blood hover:bg-blood"
+              >
+                <Send size={16} />
+                Comparte tu historia
+              </Link>
+              <a
+                href="https://www.youtube.com/@terrorencorto"
+                target="_blank"
+                className="flex items-center gap-2 font-mono text-sm tracking-wide px-6 py-3 rounded border border-border-dark text-bone-dim hover:border-amber hover:text-amber"
+              >
+                <Play size={16} />
+                Ver el canal
+              </a>
+            </div>
+          </div>
+          <div className="relative hidden md:block aspect-4/3 rounded overflow-hidden">
+            <Image src="/fondo.webp" alt="" fill priority className="object-cover" />
+            <div className="absolute inset-0 bg-linear-to-r from-void via-transparent to-transparent" />
           </div>
         </div>
       </section>
