@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Turnstile from "@/components/Turnstile";
 
 export default function EnviarForm({
   action,
@@ -115,6 +116,8 @@ export default function EnviarForm({
         Autorizo que esta historia sea narrada en el canal de YouTube @terrorencorto,
         respetando el modo de publicación que elegí arriba (con mi nombre o de forma anónima).
       </label>
+
+      <Turnstile />
 
       <button
         type="submit"

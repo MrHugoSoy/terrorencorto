@@ -1,9 +1,17 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { verifyTurnstile } from "@/lib/turnstile";
+import Turnstile from "@/components/Turnstile";
 
 async function registro(formData: FormData) {
   "use server";
+
+  const captchaOk = await verifyTurnstile(formData.get("cf-turnstile-response") as string | null);
+  if (!captchaOk) {
+    redirect(`/registro?error=${encodeURIComponent("No pudimos verificar que eres humano. Intenta de nuevo.")}`);
+  }
+
   const supabase = await createClient();
 
   const username = (formData.get("username") as string)?.trim().toLowerCase();
@@ -77,10 +85,11 @@ export default async function RegistroPage({
             name="password"
             type="password"
             required
-            minLength={6}
+            minLength={8}
             className="w-full bg-void border border-border-dark rounded px-3 py-3 text-bone focus:outline-none focus:border-amber"
           />
         </div>
+        <Turnstile />
         <button
           type="submit"
           className="mt-2 font-mono text-sm tracking-wide px-6 py-3 rounded bg-blood-deep border border-blood hover:bg-blood"

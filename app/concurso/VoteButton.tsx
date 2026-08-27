@@ -18,6 +18,7 @@ export default function VoteButton({
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (!isActive) return null;
 
@@ -35,22 +36,32 @@ export default function VoteButton({
 
   async function handleVote() {
     setLoading(true);
-    await fetch("/api/concurso/votar", {
+    setError(null);
+    const res = await fetch("/api/concurso/votar", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ entryId, contestId }),
     });
+    if (!res.ok) {
+      const { error } = await res.json().catch(() => ({ error: "No se pudo registrar tu voto." }));
+      setError(error ?? "No se pudo registrar tu voto.");
+      setLoading(false);
+      return;
+    }
     setLoading(false);
     router.refresh();
   }
 
   return (
-    <button
-      onClick={handleVote}
-      disabled={loading}
-      className="w-full font-mono text-sm px-5 py-3 rounded border border-blood text-blood hover:bg-blood hover:text-bone transition-colors disabled:opacity-50 active:scale-95"
-    >
-      {loading ? "Votando..." : "Votar por este"}
-    </button>
+    <div className="flex flex-col gap-2">
+      <button
+        onClick={handleVote}
+        disabled={loading}
+        className="w-full font-mono text-sm px-5 py-3 rounded border border-blood text-blood hover:bg-blood hover:text-bone transition-colors disabled:opacity-50 active:scale-95"
+      >
+        {loading ? "Votando..." : "Votar por este"}
+      </button>
+      {error && <p className="font-mono text-xs text-blood">{error}</p>}
+    </div>
   );
 }

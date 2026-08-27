@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { verifyTurnstile } from "@/lib/turnstile";
 import EnviarForm from "./EnviarForm";
 
 async function enviarHistoria(formData: FormData) {
@@ -8,6 +9,11 @@ async function enviarHistoria(formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
+
+  const captchaOk = await verifyTurnstile(formData.get("cf-turnstile-response") as string | null);
+  if (!captchaOk) {
+    redirect(`/enviar?error=${encodeURIComponent("No pudimos verificar que eres humano. Intenta de nuevo.")}`);
+  }
 
   const mode = formData.get("mode") as string;
   const channelConsent = formData.get("channel_consent") === "on";
@@ -18,7 +24,7 @@ async function enviarHistoria(formData: FormData) {
     content: formData.get("content") as string,
     location: formData.get("location") as string,
     mode,
-    category: formData.get("category") as string || "sin_resolver",
+    category: formData.get("category") as string,
     channel_consent: channelConsent,
   });
 
