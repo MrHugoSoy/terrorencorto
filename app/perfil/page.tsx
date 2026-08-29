@@ -46,7 +46,7 @@ export default async function PerfilPage() {
       <div className="border-b border-border-dark pb-8 mb-10">
         <p className="font-mono text-xs text-blood uppercase tracking-widest mb-2">Mi expediente</p>
         <h1 className="font-display text-3xl mb-6">@{profile?.username}</h1>
-        <AvatarUpload userId={user.id} avatarUrl={profile?.avatar_url ?? null} />
+        <AvatarUpload userId={user.id} avatarUrl={profile?.avatar_url ?? null} username={profile?.username ?? null} />
         <p className="font-mono text-xs text-bone-dim mt-6">
           {stories?.length ?? 0} historias enviadas · {publicadas} publicadas
         </p>

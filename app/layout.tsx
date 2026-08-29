@@ -22,7 +22,7 @@ export default async function RootLayout({
   const { data: { user } } = await supabase.auth.getUser();
 
   const { data: profile } = user
-    ? await supabase.from("profiles").select("is_admin, avatar_url").eq("id", user.id).single()
+    ? await supabase.from("profiles").select("is_admin, avatar_url, username").eq("id", user.id).single()
     : { data: null };
   const isAdmin = !!profile?.is_admin;
 
@@ -57,7 +57,7 @@ export default async function RootLayout({
               <div className="hidden md:flex items-center gap-4">
                 {user && (
                   <Link href="/perfil" aria-label="Mi perfil" className="opacity-80 hover:opacity-100">
-                    <Avatar src={profile?.avatar_url} size={28} />
+                    <Avatar src={profile?.avatar_url} seed={profile?.username} size={28} />
                   </Link>
                 )}
                 {user ? (
@@ -71,7 +71,7 @@ export default async function RootLayout({
                   </Link>
                 )}
               </div>
-              <MobileNav loggedIn={!!user} isAdmin={isAdmin} avatarUrl={profile?.avatar_url ?? null} />
+              <MobileNav loggedIn={!!user} isAdmin={isAdmin} avatarUrl={profile?.avatar_url ?? null} username={profile?.username ?? null} />
             </div>
           </div>
         </header>

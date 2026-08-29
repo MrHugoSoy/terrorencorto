@@ -10,10 +10,12 @@ export default function MobileNav({
   loggedIn,
   isAdmin,
   avatarUrl,
+  username,
 }: {
   loggedIn: boolean;
   isAdmin: boolean;
   avatarUrl: string | null;
+  username: string | null;
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -85,7 +87,7 @@ export default function MobileNav({
             {loggedIn && (
               <>
                 <Link href="/perfil" className={`flex items-center gap-3 font-mono text-xl uppercase tracking-widest py-5 border-b border-border-dark transition-colors ${pathname === "/perfil" ? "text-amber" : "hover:text-amber"}`}>
-                  <Avatar src={avatarUrl} size={32} />
+                  <Avatar src={avatarUrl} seed={username} size={32} />
                   Mi perfil
                 </Link>
                 {isAdmin && (

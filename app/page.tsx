@@ -65,6 +65,13 @@ export default async function Home() {
     .select("id", { count: "exact", head: true })
     .gte("created_at", semanaAtras);
 
+  const { data: pageViews } = await supabase.rpc("increment_page_views");
+
+  function formatCount(n: number) {
+    if (n < 1000) return String(n);
+    return `${(n / 1000).toFixed(1).replace(".", ",")}k`;
+  }
+
   return (
     <main>
       <section className="hero-scan border-b border-border-dark relative overflow-hidden">
@@ -122,8 +129,8 @@ export default async function Home() {
           <div className="py-7 md:px-8 flex items-start gap-3">
             <Eye className="text-amber shrink-0 mt-1" size={20} />
             <div>
-              <div className="font-mono text-3xl text-amber">9,4k</div>
-              <div className="font-mono text-xs uppercase tracking-wide text-bone-dim mt-1">testigos leyendo</div>
+              <div className="font-mono text-3xl text-amber">{formatCount(pageViews ?? 0)}</div>
+              <div className="font-mono text-xs uppercase tracking-wide text-bone-dim mt-1">visitas registradas</div>
             </div>
           </div>
           <Link href="/enviar" className="py-7 md:px-8 flex items-start gap-3 group hover:bg-paper transition-colors">
@@ -171,7 +178,7 @@ export default async function Home() {
                 </Link>
                 <div className="px-6 pb-4 border-t border-border-dark pt-3 flex items-center justify-between">
                   <span className="flex items-center gap-2 font-mono text-xs text-bone-dim truncate mr-3">
-                    {story.mode !== "incognito" && <Avatar src={profile?.avatar_url} size={20} />}
+                    {story.mode !== "incognito" && <Avatar src={profile?.avatar_url} seed={profile?.username} size={20} />}
                     {autor} · {story.location || "ubicación desconocida"}
                   </span>
                   <ShareButtons id={story.id} title={story.title} />

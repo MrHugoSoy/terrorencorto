@@ -123,7 +123,7 @@ export default async function ArchivoPage({
               </Link>
               <div className="px-6 pb-4 border-t border-border-dark pt-3 flex items-center justify-between">
                 <span className="flex items-center gap-2 font-mono text-xs text-bone-dim truncate mr-3">
-                  {story.mode !== "incognito" && <Avatar src={profile?.avatar_url} size={20} />}
+                  {story.mode !== "incognito" && <Avatar src={profile?.avatar_url} seed={profile?.username} size={20} />}
                   {autor} · {story.location || "ubicación desconocida"}
                 </span>
                 <ShareButtons id={story.id} title={story.title} />

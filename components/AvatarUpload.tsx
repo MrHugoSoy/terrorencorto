@@ -11,9 +11,11 @@ const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/webp"];
 export default function AvatarUpload({
   userId,
   avatarUrl,
+  username,
 }: {
   userId: string;
   avatarUrl: string | null;
+  username?: string | null;
 }) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -70,7 +72,7 @@ export default function AvatarUpload({
 
   return (
     <div className="flex items-center gap-4">
-      <Avatar src={avatarUrl} size={72} />
+      <Avatar src={avatarUrl} seed={username} size={72} />
       <div>
         <button
           type="button"

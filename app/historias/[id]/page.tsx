@@ -75,7 +75,7 @@ export default async function HistoriaPage({
       <div className="flex justify-between items-center mt-8 mb-4 font-mono text-xs text-bone-dim">
         <span>{story.case_number}</span>
         <span className="flex items-center gap-2">
-          {story.mode !== "incognito" && <Avatar src={profile?.avatar_url} size={20} />}
+          {story.mode !== "incognito" && <Avatar src={profile?.avatar_url} seed={profile?.username} size={20} />}
           {autor} · {story.location || "ubicación desconocida"}
         </span>
       </div>
