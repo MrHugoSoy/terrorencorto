@@ -9,6 +9,8 @@ create table public.contests (
   title text not null,
   is_active boolean not null default false,
   ends_at timestamptz,
+  poster_url text,
+  vote_count integer not null default 0,
   created_at timestamptz not null default now()
 );
 
@@ -96,3 +98,55 @@ as $$
     and length(trim(cv.message)) > 0
   order by cv.created_at desc;
 $$;
+
+-- espejo público de "usuario + mensaje + a qué corto votó", para
+-- transmitir un feed en vivo por Realtime (ver nota en
+-- schema_vote_feed.sql sobre por qué no basta con contest_votes)
+create table public.contest_vote_feed (
+  id uuid primary key default gen_random_uuid(),
+  contest_id uuid references public.contests(id) on delete cascade not null,
+  entry_id uuid references public.contest_entries(id) on delete cascade not null,
+  username text not null,
+  message text,
+  created_at timestamptz not null default now()
+);
+
+alter table public.contest_vote_feed enable row level security;
+
+create policy "feed de votos visible para todos"
+  on public.contest_vote_feed for select using (true);
+
+create function public.push_vote_to_feed()
+returns trigger as $$
+begin
+  insert into public.contest_vote_feed (contest_id, entry_id, username, message)
+  select new.contest_id, new.entry_id, p.username, new.message
+  from public.profiles p
+  where p.id = new.user_id;
+  return new;
+end;
+$$ language plpgsql security definer;
+
+create trigger trg_push_vote_to_feed
+  after insert on public.contest_votes
+  for each row execute procedure public.push_vote_to_feed();
+
+-- mantiene contests.vote_count al día para el contador en vivo
+create function public.bump_contest_vote_count()
+returns trigger as $$
+begin
+  if tg_op = 'INSERT' then
+    update public.contests set vote_count = vote_count + 1 where id = new.contest_id;
+  elsif tg_op = 'DELETE' then
+    update public.contests set vote_count = greatest(vote_count - 1, 0) where id = old.contest_id;
+  end if;
+  return null;
+end;
+$$ language plpgsql security definer;
+
+create trigger trg_bump_contest_vote_count
+  after insert or delete on public.contest_votes
+  for each row execute procedure public.bump_contest_vote_count();
+
+alter publication supabase_realtime add table public.contests;
+alter publication supabase_realtime add table public.contest_vote_feed;

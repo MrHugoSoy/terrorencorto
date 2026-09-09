@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import VoteButton from "./VoteButton";
 import LiveContestStats from "./LiveContestStats";
+import LiveVoteFeed from "./LiveVoteFeed";
 import VideoCard from "@/components/VideoCard";
 
 export const dynamic = "force-dynamic";
@@ -57,13 +58,25 @@ export default async function ConcursoPage() {
     })
   );
 
+  const entryTitleById = Object.fromEntries(
+    (activeContest?.contest_entries ?? []).map((e: { id: string; title: string }) => [e.id, e.title])
+  );
+  const { data: initialFeed } = activeContest
+    ? await supabase
+        .from("contest_vote_feed")
+        .select("id, entry_id, username, message, created_at")
+        .eq("contest_id", activeContest.id)
+        .order("created_at", { ascending: false })
+        .limit(20)
+    : { data: [] };
+
   return (
     <main className="max-w-325 mx-auto px-8 py-16">
 
       {/* Concurso activo */}
       {activeContest ? (
         <section className="mb-24">
-          <div className="border-b border-border-dark pb-8 mb-12 flex flex-col sm:flex-row gap-8">
+          <div className="border-b border-border-dark pb-8 mb-12 flex flex-col lg:flex-row gap-8">
             {activeContest.poster_url && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -72,7 +85,7 @@ export default async function ConcursoPage() {
                 className="w-56 sm:w-80 aspect-2/3 object-cover rounded border border-border-dark shrink-0"
               />
             )}
-            <div>
+            <div className="flex-1">
               <p className="font-mono text-xs text-blood uppercase tracking-widest mb-3">Concurso {activeContest.year}</p>
               <h1 className="font-display text-4xl mb-4">{activeContest.title}</h1>
               <div className="flex items-center gap-6 font-mono text-xs text-bone-dim">
@@ -102,6 +115,11 @@ export default async function ConcursoPage() {
                 </div>
               )}
             </div>
+            <LiveVoteFeed
+              contestId={activeContest.id}
+              initialFeed={initialFeed ?? []}
+              entryTitleById={entryTitleById}
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
