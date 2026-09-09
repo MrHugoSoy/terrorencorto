@@ -38,39 +38,41 @@ export default async function ConcursoPage() {
       {/* Concurso activo */}
       {activeContest ? (
         <section className="mb-24">
-          <div className="border-b border-border-dark pb-8 mb-12">
+          <div className="border-b border-border-dark pb-8 mb-12 flex flex-col sm:flex-row gap-8">
             {activeContest.poster_url && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={activeContest.poster_url}
                 alt={`Cartel de ${activeContest.title}`}
-                className="w-full max-h-100 object-cover rounded border border-border-dark mb-8"
+                className="w-40 sm:w-56 aspect-2/3 object-cover rounded border border-border-dark shrink-0"
               />
             )}
-            <p className="font-mono text-xs text-blood uppercase tracking-widest mb-3">Concurso {activeContest.year}</p>
-            <h1 className="font-display text-4xl mb-4">{activeContest.title}</h1>
-            <div className="flex items-center gap-6 font-mono text-xs text-bone-dim">
-              {isOpen ? (
-                <>
-                  <span className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-blood inline-block animate-pulse" />
-                    Votación abierta
-                  </span>
-                  {activeContest.ends_at && (
-                    <span>Cierra el {new Date(activeContest.ends_at).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" })}</span>
-                  )}
-                </>
-              ) : (
-                <span>Votación cerrada</span>
-              )}
-              <span>{activeContest.contest_entries?.length ?? 0} cortos participando</span>
-            </div>
-            {!user && isOpen && (
-              <div className="mt-6 border border-border-dark rounded px-4 py-3 font-mono text-xs text-bone-dim">
-                <Link href="/registro" className="text-amber hover:underline">Crea una cuenta</Link> o{" "}
-                <Link href="/login" className="text-amber hover:underline">inicia sesión</Link> para votar.
+            <div>
+              <p className="font-mono text-xs text-blood uppercase tracking-widest mb-3">Concurso {activeContest.year}</p>
+              <h1 className="font-display text-4xl mb-4">{activeContest.title}</h1>
+              <div className="flex items-center gap-6 font-mono text-xs text-bone-dim">
+                {isOpen ? (
+                  <>
+                    <span className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-blood inline-block animate-pulse" />
+                      Votación abierta
+                    </span>
+                    {activeContest.ends_at && (
+                      <span>Cierra el {new Date(activeContest.ends_at).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" })}</span>
+                    )}
+                  </>
+                ) : (
+                  <span>Votación cerrada</span>
+                )}
+                <span>{activeContest.contest_entries?.length ?? 0} cortos participando</span>
               </div>
-            )}
+              {!user && isOpen && (
+                <div className="mt-6 border border-border-dark rounded px-4 py-3 font-mono text-xs text-bone-dim">
+                  <Link href="/registro" className="text-amber hover:underline">Crea una cuenta</Link> o{" "}
+                  <Link href="/login" className="text-amber hover:underline">inicia sesión</Link> para votar.
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -118,22 +120,24 @@ export default async function ConcursoPage() {
             {pastContests.map((contest) => {
               return (
                 <div key={contest.id}>
-                  {contest.poster_url && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={contest.poster_url}
-                      alt={`Cartel de ${contest.title}`}
-                      className="w-full max-h-64 object-cover rounded border border-border-dark mb-6"
-                    />
-                  )}
-                  <div className="flex items-baseline gap-4 mb-8">
-                    <h3 className="font-display text-xl">{contest.title}</h3>
-                    <span className="font-mono text-xs text-bone-dim">{contest.year}</span>
-                    {contest.winner_entry_id && (
-                      <span className="font-mono text-xs text-amber">
-                        Ganador: {contest.contest_entries?.find((e: { id: string }) => e.id === contest.winner_entry_id)?.title}
-                      </span>
+                  <div className="flex items-start gap-6 mb-8">
+                    {contest.poster_url && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={contest.poster_url}
+                        alt={`Cartel de ${contest.title}`}
+                        className="w-24 aspect-2/3 object-cover rounded border border-border-dark shrink-0"
+                      />
                     )}
+                    <div className="flex items-baseline gap-4 flex-wrap">
+                      <h3 className="font-display text-xl">{contest.title}</h3>
+                      <span className="font-mono text-xs text-bone-dim">{contest.year}</span>
+                      {contest.winner_entry_id && (
+                        <span className="font-mono text-xs text-amber">
+                          Ganador: {contest.contest_entries?.find((e: { id: string }) => e.id === contest.winner_entry_id)?.title}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {[...(contest.contest_entries ?? [])].sort((a: { id: string }, b: { id: string }) =>
