@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { getYouTubeTitle } from "@/lib/youtube";
 import VoteButton from "./VoteButton";
 import LiveContestStats from "./LiveContestStats";
 import LiveVoteFeed from "./LiveVoteFeed";
@@ -47,8 +48,20 @@ export default async function ConcursoPage() {
     })
   );
 
+  // el título que se ve es el real del video en YouTube, no el que
+  // se escribió a mano al agregar la entrada (puede tener errores)
+  const youtubeTitleByEntry = new Map<string, string>();
+  const allEntries = [activeContest, ...pastContests]
+    .flatMap((c) => c?.contest_entries ?? []) as { id: string; title: string; youtube_url: string }[];
+  await Promise.all(
+    allEntries.map(async (entry) => {
+      const title = await getYouTubeTitle(entry.youtube_url);
+      youtubeTitleByEntry.set(entry.id, title ?? entry.title);
+    })
+  );
+
   const entryTitleById = Object.fromEntries(
-    (activeContest?.contest_entries ?? []).map((e: { id: string; title: string }) => [e.id, e.title])
+    (activeContest?.contest_entries ?? []).map((e: { id: string }) => [e.id, youtubeTitleByEntry.get(e.id) ?? ""])
   );
   const { data: initialFeed } = activeContest
     ? await supabase
@@ -116,7 +129,7 @@ export default async function ConcursoPage() {
               <VideoCard
                 key={entry.id}
                 youtubeUrl={entry.youtube_url}
-                title={entry.title}
+                title={youtubeTitleByEntry.get(entry.id) ?? entry.title}
                 description={entry.description}
                 shareUrl={entry.youtube_url}
                 badge={
@@ -175,7 +188,8 @@ export default async function ConcursoPage() {
                       <span className="font-mono text-xs text-bone-dim">{contest.year}</span>
                       {contest.winner_entry_id && (
                         <span className="font-mono text-xs text-amber">
-                          Ganador: {contest.contest_entries?.find((e: { id: string }) => e.id === contest.winner_entry_id)?.title}
+                          Ganador: {youtubeTitleByEntry.get(contest.winner_entry_id)
+                            ?? contest.contest_entries?.find((e: { id: string }) => e.id === contest.winner_entry_id)?.title}
                         </span>
                       )}
                     </div>
@@ -195,7 +209,7 @@ export default async function ConcursoPage() {
                         <VideoCard
                           key={entry.id}
                           youtubeUrl={entry.youtube_url}
-                          title={entry.title}
+                          title={youtubeTitleByEntry.get(entry.id) ?? entry.title}
                           shareUrl={entry.youtube_url}
                           winner={isWinner}
                           badge={badgeTexto ? { texto: badgeTexto, clase: isWinner ? "stamp-amber" : undefined } : undefined}
