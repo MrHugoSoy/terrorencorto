@@ -102,7 +102,7 @@ export default async function Home() {
           <div className="absolute inset-0 bg-linear-to-r from-void via-void/80 to-void/30" />
           <div className="absolute inset-0 bg-linear-to-t from-void via-transparent to-void/40" />
         </div>
-        <div className="max-w-325 mx-auto px-8 py-24 relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
+        <div className="max-w-325 mx-auto px-8 py-24 relative z-10 flex flex-col lg:flex-row lg:items-stretch lg:justify-between gap-10">
           <div>
             <RecTimer />
             <h1 className="font-display text-5xl md:text-6xl leading-tight max-w-3xl">
@@ -134,6 +134,7 @@ export default async function Home() {
               contestId={activeContest.id}
               initialFeed={initialFeed ?? []}
               entryTitleById={entryTitleById}
+              className="lg:w-96 max-h-none"
             />
           )}
         </div>

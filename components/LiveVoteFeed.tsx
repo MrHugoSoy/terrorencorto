@@ -15,10 +15,12 @@ export default function LiveVoteFeed({
   contestId,
   initialFeed,
   entryTitleById,
+  className = "lg:w-80 max-h-100",
 }: {
   contestId: string;
   initialFeed: FeedEntry[];
   entryTitleById: Record<string, string>;
+  className?: string;
 }) {
   const [feed, setFeed] = useState(initialFeed);
 
@@ -44,7 +46,7 @@ export default function LiveVoteFeed({
   }, [contestId, initialFeed]);
 
   return (
-    <div className="lg:w-80 shrink-0 border border-border-dark rounded flex flex-col max-h-100 bg-void/90 backdrop-blur-sm">
+    <div className={`shrink-0 border border-border-dark rounded flex flex-col bg-void/90 backdrop-blur-sm ${className}`}>
       <div className="flex items-center gap-2 px-4 py-3 border-b border-border-dark shrink-0">
         <span className="w-2 h-2 rounded-full bg-blood inline-block animate-pulse" />
         <span className="font-mono text-xs uppercase tracking-wide text-bone-dim">Actividad en vivo</span>
