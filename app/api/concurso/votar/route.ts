@@ -9,7 +9,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });
   }
 
-  const { entryId, contestId } = await req.json();
+  const { entryId, contestId, message } = await req.json();
+  const trimmedMessage = typeof message === "string" ? message.trim().slice(0, 140) : null;
 
   const { data: contest } = await supabase
     .from("contests")
@@ -36,6 +37,7 @@ export async function POST(req: NextRequest) {
     entry_id: entryId,
     contest_id: contestId,
     user_id: user.id,
+    message: trimmedMessage || null,
   });
 
   if (error) {

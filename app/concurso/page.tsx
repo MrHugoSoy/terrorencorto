@@ -46,6 +46,17 @@ export default async function ConcursoPage() {
     })
   );
 
+  type EntryMessage = { username: string; message: string; created_at: string };
+  const messagesByEntry = new Map<string, EntryMessage[]>();
+  const allEntryIds = [activeContest, ...pastContests]
+    .flatMap((c) => c?.contest_entries?.map((e: { id: string }) => e.id) ?? []);
+  await Promise.all(
+    allEntryIds.map(async (entryId) => {
+      const { data: messages } = await supabase.rpc("get_entry_messages", { p_entry_id: entryId });
+      messagesByEntry.set(entryId, messages ?? []);
+    })
+  );
+
   return (
     <main className="max-w-325 mx-auto px-8 py-16">
 
@@ -120,6 +131,15 @@ export default async function ConcursoPage() {
                     Inicia sesión para votar
                   </Link>
                 ) : null}
+                {(messagesByEntry.get(entry.id)?.length ?? 0) > 0 && (
+                  <div className="mt-4 pt-4 border-t border-border-dark flex flex-col gap-2">
+                    {messagesByEntry.get(entry.id)!.map((m, i) => (
+                      <p key={i} className="font-mono text-xs text-bone-dim">
+                        <span className="text-amber">@{m.username}</span> — {m.message}
+                      </p>
+                    ))}
+                  </div>
+                )}
               </VideoCard>
             ))}
           </div>
@@ -181,7 +201,17 @@ export default async function ConcursoPage() {
                           shareUrl={entry.youtube_url}
                           winner={isWinner}
                           badge={badgeTexto ? { texto: badgeTexto, clase: isWinner ? "stamp-amber" : undefined } : undefined}
-                        />
+                        >
+                          {(messagesByEntry.get(entry.id)?.length ?? 0) > 0 && (
+                            <div className="flex flex-col gap-2">
+                              {messagesByEntry.get(entry.id)!.map((m, i) => (
+                                <p key={i} className="font-mono text-xs text-bone-dim">
+                                  <span className="text-amber">@{m.username}</span> — {m.message}
+                                </p>
+                              ))}
+                            </div>
+                          )}
+                        </VideoCard>
                       );
                     })}
                   </div>

@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+const MAX_MESSAGE = 140;
+
 export default function VoteButton({
   entryId,
   contestId,
@@ -19,6 +21,7 @@ export default function VoteButton({
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState("");
 
   if (!isActive) return null;
 
@@ -40,7 +43,7 @@ export default function VoteButton({
     const res = await fetch("/api/concurso/votar", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ entryId, contestId }),
+      body: JSON.stringify({ entryId, contestId, message }),
     });
     if (!res.ok) {
       const { error } = await res.json().catch(() => ({ error: "No se pudo registrar tu voto." }));
@@ -54,6 +57,14 @@ export default function VoteButton({
 
   return (
     <div className="flex flex-col gap-2">
+      <input
+        type="text"
+        value={message}
+        onChange={(e) => setMessage(e.target.value.slice(0, MAX_MESSAGE))}
+        placeholder="Deja un mensaje corto (opcional)"
+        maxLength={MAX_MESSAGE}
+        className="w-full bg-void border border-border-dark rounded px-3 py-2 text-sm text-bone focus:outline-none focus:border-amber"
+      />
       <button
         onClick={handleVote}
         disabled={loading}
