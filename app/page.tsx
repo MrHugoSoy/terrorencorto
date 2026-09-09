@@ -71,9 +71,11 @@ export default async function Home() {
   const now = new Date();
   const { data: activeContest } = await supabase
     .from("contests")
-    .select("id, contest_entries!contest_id(id, title)")
+    .select("id, year, title, ends_at, contest_entries!contest_id(id, title)")
     .eq("is_active", true)
     .maybeSingle();
+
+  const isContestOpen = !!activeContest && (!activeContest.ends_at || new Date(activeContest.ends_at) > now);
 
   const entryTitleById = Object.fromEntries(
     (activeContest?.contest_entries ?? []).map((e: { id: string; title: string }) => [e.id, e.title])
@@ -104,29 +106,69 @@ export default async function Home() {
         </div>
         <div className="max-w-325 mx-auto px-8 py-24 relative z-10 flex flex-col lg:flex-row lg:items-stretch lg:justify-between gap-10">
           <div>
-            <RecTimer />
-            <h1 className="font-display text-5xl md:text-6xl leading-tight max-w-3xl">
-              Lo que viste<br />no se va a <span className="text-blood">olvidar.</span>
+            {isContestOpen ? (
+              <span className="flex items-center gap-2 font-mono text-xs text-blood uppercase tracking-widest">
+                <span className="w-2 h-2 rounded-full bg-blood inline-block animate-pulse" />
+                Votación abierta · Concurso {activeContest!.year}
+              </span>
+            ) : (
+              <RecTimer />
+            )}
+            <h1 className="font-display text-5xl md:text-6xl leading-tight max-w-3xl mt-2">
+              {isContestOpen ? (
+                <>Vota por tu<br /><span className="text-blood">corto favorito.</span></>
+              ) : (
+                <>Lo que viste<br />no se va a <span className="text-blood">olvidar.</span></>
+              )}
             </h1>
             <p className="text-bone-dim text-lg max-w-md mt-6 leading-relaxed">
-              Un archivo de testimonios reales y encuentros sin explicación. Las mejores historias se narran en el canal.
+              {isContestOpen ? (
+                <>
+                  &quot;{activeContest!.title}&quot; ya está en votación
+                  {activeContest!.ends_at && (
+                    <> hasta el {new Date(activeContest!.ends_at).toLocaleDateString("es-MX", { day: "numeric", month: "long" })}</>
+                  )}. Elige tu favorito y deja tu comentario.
+                </>
+              ) : (
+                "Un archivo de testimonios reales y encuentros sin explicación. Las mejores historias se narran en el canal."
+              )}
             </p>
             <div className="flex gap-3 mt-9">
-              <Link
-                href="/enviar"
-                className="flex items-center gap-2 font-mono text-sm tracking-wide px-6 py-3 rounded bg-blood-deep border border-blood hover:bg-blood"
-              >
-                <Send size={16} />
-                Comparte tu historia
-              </Link>
-              <a
-                href="https://www.youtube.com/@terrorencorto"
-                target="_blank"
-                className="flex items-center gap-2 font-mono text-sm tracking-wide px-6 py-3 rounded border border-border-dark text-bone-dim hover:border-amber hover:text-amber"
-              >
-                <Play size={16} />
-                Ver el canal
-              </a>
+              {isContestOpen ? (
+                <>
+                  <Link
+                    href="/concurso"
+                    className="flex items-center gap-2 font-mono text-sm tracking-wide px-6 py-3 rounded bg-blood-deep border border-blood hover:bg-blood"
+                  >
+                    <Send size={16} />
+                    Votar ahora
+                  </Link>
+                  <Link
+                    href="/enviar"
+                    className="flex items-center gap-2 font-mono text-sm tracking-wide px-6 py-3 rounded border border-border-dark text-bone-dim hover:border-amber hover:text-amber"
+                  >
+                    Comparte tu historia
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/enviar"
+                    className="flex items-center gap-2 font-mono text-sm tracking-wide px-6 py-3 rounded bg-blood-deep border border-blood hover:bg-blood"
+                  >
+                    <Send size={16} />
+                    Comparte tu historia
+                  </Link>
+                  <a
+                    href="https://www.youtube.com/@terrorencorto"
+                    target="_blank"
+                    className="flex items-center gap-2 font-mono text-sm tracking-wide px-6 py-3 rounded border border-border-dark text-bone-dim hover:border-amber hover:text-amber"
+                  >
+                    <Play size={16} />
+                    Ver el canal
+                  </a>
+                </>
+              )}
             </div>
           </div>
           {activeContest && (
