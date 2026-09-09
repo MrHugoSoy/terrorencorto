@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import VoteButton from "./VoteButton";
+import LiveContestStats from "./LiveContestStats";
 import VideoCard from "@/components/VideoCard";
 
 export const dynamic = "force-dynamic";
@@ -77,7 +78,11 @@ export default async function ConcursoPage() {
                 ) : (
                   <span>Votación cerrada</span>
                 )}
-                <span>{activeContest.contest_entries?.length ?? 0} cortos participando</span>
+                <LiveContestStats
+                  contestId={activeContest.id}
+                  entryCount={activeContest.contest_entries?.length ?? 0}
+                  initialVotes={activeContest.vote_count ?? 0}
+                />
               </div>
               {!user && isOpen && (
                 <div className="mt-6 border border-border-dark rounded px-4 py-3 font-mono text-xs text-bone-dim">
