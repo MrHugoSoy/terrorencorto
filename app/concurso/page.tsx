@@ -57,7 +57,7 @@ export default async function ConcursoPage() {
               <img
                 src={activeContest.poster_url}
                 alt={`Cartel de ${activeContest.title}`}
-                className="w-40 sm:w-56 aspect-2/3 object-cover rounded border border-border-dark shrink-0"
+                className="w-56 sm:w-80 aspect-2/3 object-cover rounded border border-border-dark shrink-0"
               />
             )}
             <div>
@@ -144,7 +144,7 @@ export default async function ConcursoPage() {
                       <img
                         src={contest.poster_url}
                         alt={`Cartel de ${contest.title}`}
-                        className="w-24 aspect-2/3 object-cover rounded border border-border-dark shrink-0"
+                        className="w-32 sm:w-40 aspect-2/3 object-cover rounded border border-border-dark shrink-0"
                       />
                     )}
                     <div className="flex items-baseline gap-4 flex-wrap">
