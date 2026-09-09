@@ -176,7 +176,7 @@ export default async function Home() {
               contestId={activeContest.id}
               initialFeed={initialFeed ?? []}
               entryTitleById={entryTitleById}
-              className="lg:w-96 max-h-none min-h-125"
+              className="lg:w-96 max-h-none"
             />
           )}
         </div>
