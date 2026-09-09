@@ -32,6 +32,19 @@ export default async function ConcursoPage() {
   const sortedEntries = (entries: { id: string; title: string; youtube_url: string; description?: string }[] | null) =>
     [...(entries ?? [])];
 
+  // los resultados solo llegan (desde el server) si la votación ya cerró —
+  // ver public.get_contest_results en supabase/schema_contest_results.sql
+  const resultsByContest = new Map<string, Map<string, number>>();
+  await Promise.all(
+    [activeContest, ...pastContests].filter(Boolean).map(async (contest) => {
+      const { data: results } = await supabase.rpc("get_contest_results", { p_contest_id: contest!.id });
+      resultsByContest.set(
+        contest!.id,
+        new Map((results ?? []).map((r: { entry_id: string; votes: number }) => [r.entry_id, r.votes]))
+      );
+    })
+  );
+
   return (
     <main className="max-w-325 mx-auto px-8 py-16">
 
@@ -83,6 +96,11 @@ export default async function ConcursoPage() {
                 title={entry.title}
                 description={entry.description}
                 shareUrl={entry.youtube_url}
+                badge={
+                  resultsByContest.get(activeContest.id)?.has(entry.id)
+                    ? { texto: `${resultsByContest.get(activeContest.id)!.get(entry.id)} votos` }
+                    : undefined
+                }
               >
                 {user ? (
                   <VoteButton
@@ -144,6 +162,12 @@ export default async function ConcursoPage() {
                       a.id === contest.winner_entry_id ? -1 : b.id === contest.winner_entry_id ? 1 : 0
                     ).map((entry: { id: string; title: string; youtube_url: string }) => {
                       const isWinner = entry.id === contest.winner_entry_id;
+                      const votes = resultsByContest.get(contest.id)?.get(entry.id);
+                      const badgeTexto = isWinner
+                        ? `🏆 Ganador${votes !== undefined ? ` · ${votes} votos` : ""}`
+                        : votes !== undefined
+                        ? `${votes} votos`
+                        : undefined;
                       return (
                         <VideoCard
                           key={entry.id}
@@ -151,7 +175,7 @@ export default async function ConcursoPage() {
                           title={entry.title}
                           shareUrl={entry.youtube_url}
                           winner={isWinner}
-                          badge={isWinner ? { texto: "🏆 Ganador", clase: "stamp-amber" } : undefined}
+                          badge={badgeTexto ? { texto: badgeTexto, clase: isWinner ? "stamp-amber" : undefined } : undefined}
                         />
                       );
                     })}

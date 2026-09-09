@@ -121,6 +121,17 @@ export default async function AdminConcursoPage() {
 
   const now = new Date();
 
+  const resultsByContest = new Map<string, Map<string, number>>();
+  await Promise.all(
+    (contests ?? []).map(async (contest) => {
+      const { data: results } = await supabase.rpc("get_contest_results", { p_contest_id: contest.id });
+      resultsByContest.set(
+        contest.id,
+        new Map((results ?? []).map((r: { entry_id: string; votes: number }) => [r.entry_id, r.votes]))
+      );
+    })
+  );
+
   return (
     <main className="max-w-325 mx-auto px-8 py-16">
       <h1 className="font-display text-2xl mb-2">Gestión de concursos</h1>
@@ -244,10 +255,17 @@ export default async function AdminConcursoPage() {
                   {contest.contest_entries?.length === 0 && (
                     <p className="font-mono text-xs text-bone-dim">Sin cortos agregados aún.</p>
                   )}
-                  {contest.contest_entries?.map((entry: { id: string; title: string; youtube_url: string; description?: string }) => (
+                  {[...(contest.contest_entries ?? [])]
+                    .sort((a: { id: string }, b: { id: string }) =>
+                      (resultsByContest.get(contest.id)?.get(b.id) ?? 0) - (resultsByContest.get(contest.id)?.get(a.id) ?? 0)
+                    )
+                    .map((entry: { id: string; title: string; youtube_url: string; description?: string }) => (
                     <div key={entry.id} className="flex items-center justify-between gap-3 border border-border-dark rounded px-4 py-3">
-                      <div>
+                      <div className="flex items-center gap-3">
                         <span className="font-semibold text-sm">{entry.title}</span>
+                        <span className="font-mono text-xs text-amber border border-amber/50 rounded px-2 py-0.5">
+                          {resultsByContest.get(contest.id)?.get(entry.id) ?? 0} votos
+                        </span>
                       </div>
                       <form action={eliminarEntrada}>
                         <input type="hidden" name="id" value={entry.id} />
@@ -265,8 +283,14 @@ export default async function AdminConcursoPage() {
                     <select name="winner_entry_id" defaultValue={contest.winner_entry_id ?? ""}
                       className="flex-1 bg-void border border-border-dark rounded px-3 py-2 text-bone text-sm font-mono">
                       <option value="">— Sin marcar —</option>
-                      {contest.contest_entries?.map((e: { id: string; title: string }) => (
-                        <option key={e.id} value={e.id}>{e.title}</option>
+                      {[...(contest.contest_entries ?? [])]
+                        .sort((a: { id: string }, b: { id: string }) =>
+                          (resultsByContest.get(contest.id)?.get(b.id) ?? 0) - (resultsByContest.get(contest.id)?.get(a.id) ?? 0)
+                        )
+                        .map((e: { id: string; title: string }) => (
+                          <option key={e.id} value={e.id}>
+                            {e.title} ({resultsByContest.get(contest.id)?.get(e.id) ?? 0} votos)
+                          </option>
                       ))}
                     </select>
                     <button type="submit"
