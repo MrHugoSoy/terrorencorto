@@ -50,10 +50,25 @@ create policy "el usuario ve sus propios votos"
 create policy "el admin ve todos los votos"
   on public.contest_votes for select using (public.is_admin());
 
--- solo usuarios autenticados pueden votar
-create policy "usuarios autenticados votan"
+-- solo usuarios autenticados pueden votar, y solo mientras el
+-- concurso está activo y no ha vencido, por una entrada que
+-- realmente pertenece a ese concurso
+create policy "usuarios autenticados votan solo si el concurso esta abierto"
   on public.contest_votes for insert
-  with check (auth.uid() = user_id);
+  with check (
+    auth.uid() = user_id
+    and exists (
+      select 1 from public.contests c
+      where c.id = contest_votes.contest_id
+        and c.is_active
+        and (c.ends_at is null or c.ends_at > now())
+    )
+    and exists (
+      select 1 from public.contest_entries e
+      where e.id = contest_votes.entry_id
+        and e.contest_id = contest_votes.contest_id
+    )
+  );
 
 -- solo el admin gestiona concursos y entradas
 create policy "admin gestiona concursos"
