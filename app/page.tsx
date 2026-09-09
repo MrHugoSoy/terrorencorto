@@ -5,6 +5,7 @@ import RecTimer from "@/components/RecTimer";
 import ShareButtons from "@/components/ShareButtons";
 import VideoCard from "@/components/VideoCard";
 import Avatar from "@/components/Avatar";
+import LiveVoteFeed from "@/components/LiveVoteFeed";
 import { Send, Play, FileText, Eye, Fingerprint, ArrowRight } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -67,6 +68,25 @@ export default async function Home() {
 
   const { data: pageViews } = await supabase.rpc("increment_page_views");
 
+  const now = new Date();
+  const { data: activeContest } = await supabase
+    .from("contests")
+    .select("id, contest_entries!contest_id(id, title)")
+    .eq("is_active", true)
+    .maybeSingle();
+
+  const entryTitleById = Object.fromEntries(
+    (activeContest?.contest_entries ?? []).map((e: { id: string; title: string }) => [e.id, e.title])
+  );
+  const { data: initialFeed } = activeContest
+    ? await supabase
+        .from("contest_vote_feed")
+        .select("id, entry_id, username, message, created_at")
+        .eq("contest_id", activeContest.id)
+        .order("created_at", { ascending: false })
+        .limit(20)
+    : { data: [] };
+
   function formatCount(n: number) {
     if (n < 1000) return String(n);
     return `${(n / 1000).toFixed(1).replace(".", ",")}k`;
@@ -82,31 +102,40 @@ export default async function Home() {
           <div className="absolute inset-0 bg-linear-to-r from-void via-void/80 to-void/30" />
           <div className="absolute inset-0 bg-linear-to-t from-void via-transparent to-void/40" />
         </div>
-        <div className="max-w-325 mx-auto px-8 py-24 relative z-10">
-          <RecTimer />
-          <h1 className="font-display text-5xl md:text-6xl leading-tight max-w-3xl">
-            Lo que viste<br />no se va a <span className="text-blood">olvidar.</span>
-          </h1>
-          <p className="text-bone-dim text-lg max-w-md mt-6 leading-relaxed">
-            Un archivo de testimonios reales y encuentros sin explicación. Las mejores historias se narran en el canal.
-          </p>
-          <div className="flex gap-3 mt-9">
-            <Link
-              href="/enviar"
-              className="flex items-center gap-2 font-mono text-sm tracking-wide px-6 py-3 rounded bg-blood-deep border border-blood hover:bg-blood"
-            >
-              <Send size={16} />
-              Comparte tu historia
-            </Link>
-            <a
-              href="https://www.youtube.com/@terrorencorto"
-              target="_blank"
-              className="flex items-center gap-2 font-mono text-sm tracking-wide px-6 py-3 rounded border border-border-dark text-bone-dim hover:border-amber hover:text-amber"
-            >
-              <Play size={16} />
-              Ver el canal
-            </a>
+        <div className="max-w-325 mx-auto px-8 py-24 relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
+          <div>
+            <RecTimer />
+            <h1 className="font-display text-5xl md:text-6xl leading-tight max-w-3xl">
+              Lo que viste<br />no se va a <span className="text-blood">olvidar.</span>
+            </h1>
+            <p className="text-bone-dim text-lg max-w-md mt-6 leading-relaxed">
+              Un archivo de testimonios reales y encuentros sin explicación. Las mejores historias se narran en el canal.
+            </p>
+            <div className="flex gap-3 mt-9">
+              <Link
+                href="/enviar"
+                className="flex items-center gap-2 font-mono text-sm tracking-wide px-6 py-3 rounded bg-blood-deep border border-blood hover:bg-blood"
+              >
+                <Send size={16} />
+                Comparte tu historia
+              </Link>
+              <a
+                href="https://www.youtube.com/@terrorencorto"
+                target="_blank"
+                className="flex items-center gap-2 font-mono text-sm tracking-wide px-6 py-3 rounded border border-border-dark text-bone-dim hover:border-amber hover:text-amber"
+              >
+                <Play size={16} />
+                Ver el canal
+              </a>
+            </div>
           </div>
+          {activeContest && (
+            <LiveVoteFeed
+              contestId={activeContest.id}
+              initialFeed={initialFeed ?? []}
+              entryTitleById={entryTitleById}
+            />
+          )}
         </div>
       </section>
 

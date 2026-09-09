@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getYouTubeTitle } from "@/lib/youtube";
 import VoteButton from "./VoteButton";
 import LiveContestStats from "./LiveContestStats";
-import LiveVoteFeed from "./LiveVoteFeed";
+import LiveVoteFeed from "@/components/LiveVoteFeed";
 import VideoCard from "@/components/VideoCard";
 
 export const dynamic = "force-dynamic";
