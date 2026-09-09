@@ -5,13 +5,29 @@ import DeleteContestButton from "./DeleteContestButton";
 
 export const dynamic = "force-dynamic";
 
+async function subirCartel(supabase: Awaited<ReturnType<typeof createClient>>, poster: FormDataEntryValue | null) {
+  if (!(poster instanceof File) || poster.size === 0) return null;
+
+  const ext = poster.name.split(".").pop();
+  const path = `${crypto.randomUUID()}.${ext}`;
+
+  const { error } = await supabase.storage.from("posters").upload(path, poster);
+  if (error) throw new Error(`No se pudo subir el cartel: ${error.message}`);
+
+  const { data: { publicUrl } } = supabase.storage.from("posters").getPublicUrl(path);
+  return publicUrl;
+}
+
 async function crearConcurso(formData: FormData) {
   "use server";
   const supabase = await createClient();
+  const poster_url = await subirCartel(supabase, formData.get("poster"));
+
   await supabase.from("contests").insert({
     year: parseInt(formData.get("year") as string),
     title: formData.get("title") as string,
     ends_at: formData.get("ends_at") || null,
+    poster_url,
     is_active: false,
     is_published: false,
   });
@@ -21,9 +37,12 @@ async function crearConcurso(formData: FormData) {
 async function crearArchivoHistorico(formData: FormData) {
   "use server";
   const supabase = await createClient();
+  const poster_url = await subirCartel(supabase, formData.get("poster"));
+
   await supabase.from("contests").insert({
     year: parseInt(formData.get("year") as string),
     title: formData.get("title") as string,
+    poster_url,
     is_active: false,
     is_published: true,
   });
@@ -128,6 +147,11 @@ export default async function AdminConcursoPage() {
               className="w-full bg-void border border-border-dark rounded px-3 py-2 text-bone font-mono text-sm" />
           </div>
           <div className="md:col-span-3">
+            <label className="block font-mono text-xs uppercase tracking-wide text-bone-dim mb-2">Cartel del concurso (opcional)</label>
+            <input name="poster" type="file" accept="image/png,image/jpeg,image/webp"
+              className="w-full bg-void border border-border-dark rounded px-3 py-2 text-bone text-xs font-mono" />
+          </div>
+          <div className="md:col-span-3">
             <button type="submit"
               className="font-mono text-xs uppercase tracking-wide border border-amber text-amber rounded px-5 py-2 hover:bg-amber hover:text-void">
               Crear concurso
@@ -150,6 +174,11 @@ export default async function AdminConcursoPage() {
             <label className="block font-mono text-xs uppercase tracking-wide text-bone-dim mb-2">Título</label>
             <input name="title" type="text" required placeholder="Ej: Concurso Terror en Corto 2023"
               className="w-full bg-void border border-border-dark rounded px-3 py-2 text-bone text-sm" />
+          </div>
+          <div className="md:col-span-2">
+            <label className="block font-mono text-xs uppercase tracking-wide text-bone-dim mb-2">Cartel del concurso (opcional)</label>
+            <input name="poster" type="file" accept="image/png,image/jpeg,image/webp"
+              className="w-full bg-void border border-border-dark rounded px-3 py-2 text-bone text-xs font-mono" />
           </div>
           <div className="md:col-span-2">
             <button type="submit"

@@ -39,6 +39,14 @@ export default async function ConcursoPage() {
       {activeContest ? (
         <section className="mb-24">
           <div className="border-b border-border-dark pb-8 mb-12">
+            {activeContest.poster_url && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={activeContest.poster_url}
+                alt={`Cartel de ${activeContest.title}`}
+                className="w-full max-h-100 object-cover rounded border border-border-dark mb-8"
+              />
+            )}
             <p className="font-mono text-xs text-blood uppercase tracking-widest mb-3">Concurso {activeContest.year}</p>
             <h1 className="font-display text-4xl mb-4">{activeContest.title}</h1>
             <div className="flex items-center gap-6 font-mono text-xs text-bone-dim">
@@ -110,6 +118,14 @@ export default async function ConcursoPage() {
             {pastContests.map((contest) => {
               return (
                 <div key={contest.id}>
+                  {contest.poster_url && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={contest.poster_url}
+                      alt={`Cartel de ${contest.title}`}
+                      className="w-full max-h-64 object-cover rounded border border-border-dark mb-6"
+                    />
+                  )}
                   <div className="flex items-baseline gap-4 mb-8">
                     <h3 className="font-display text-xl">{contest.title}</h3>
                     <span className="font-mono text-xs text-bone-dim">{contest.year}</span>

@@ -53,6 +53,7 @@ create table public.stories (
   location text,
   mode text not null check (mode in ('autor','incognito')) default 'autor',
   status text not null check (status in ('pendiente','publicado','rechazado','seleccionado_canal','usado_canal')) default 'pendiente',
+  category text check (category in ('testimonio_real','leyenda_urbana','paranormal','creepypasta')) default 'testimonio_real',
   channel_consent boolean not null default false,
   video_url text,
   case_number text unique,
@@ -103,6 +104,11 @@ create policy "usuarios autenticados envian historias"
 -- solo el admin puede cambiar estado, marcar video, etc.
 create policy "solo el admin actualiza historias"
   on public.stories for update
+  using (public.is_admin());
+
+-- solo el admin puede eliminar historias
+create policy "solo el admin elimina historias"
+  on public.stories for delete
   using (public.is_admin());
 
 -- índice para el feed público ordenado por fecha
