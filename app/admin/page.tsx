@@ -30,7 +30,12 @@ async function actualizarEstado(formData: FormData) {
 async function eliminarHistoria(formData: FormData) {
   "use server";
   const supabase = await createClient();
-  await supabase.from("stories").delete().eq("id", formData.get("id") as string);
+  const { error, count } = await supabase
+    .from("stories")
+    .delete({ count: "exact" })
+    .eq("id", formData.get("id") as string);
+  if (error) throw new Error(`Error al eliminar: ${error.message}`);
+  if (!count) throw new Error("No se eliminó ninguna historia (revisa la política de DELETE en Supabase).");
   revalidatePath("/admin");
   revalidatePath("/");
   revalidatePath("/archivo");
