@@ -35,8 +35,13 @@ async function eliminarHistoria(formData: FormData) {
     .from("stories")
     .delete({ count: "exact" })
     .eq("id", formData.get("id") as string);
-  if (error) throw new Error(`Error al eliminar: ${error.message}`);
-  if (!count) throw new Error("No se eliminó ninguna historia (revisa la política de DELETE en Supabase).");
+
+  if (error) {
+    redirect(`/admin/historias?error=${encodeURIComponent(`Error al eliminar: ${error.message}`)}`);
+  }
+  if (!count) {
+    redirect(`/admin/historias?error=${encodeURIComponent("No se eliminó ninguna historia. Revisa la política de DELETE en Supabase (public.stories).")}`);
+  }
   revalidatePath("/admin/historias");
   revalidatePath("/admin");
   revalidatePath("/");
@@ -55,7 +60,7 @@ const ESTADO_LABEL: Record<string, string> = {
 export default async function AdminHistoriasPage({
   searchParams,
 }: {
-  searchParams: Promise<{ pagina?: string; status?: string; category?: string; q?: string }>;
+  searchParams: Promise<{ pagina?: string; status?: string; category?: string; q?: string; error?: string }>;
 }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -65,7 +70,7 @@ export default async function AdminHistoriasPage({
     .from("profiles").select("is_admin").eq("id", user.id).single();
   if (!profile?.is_admin) redirect("/");
 
-  const { pagina, status, category, q } = await searchParams;
+  const { pagina, status, category, q, error: deleteError } = await searchParams;
   const paginaActual = Math.max(1, parseInt(pagina ?? "1"));
   const desde = (paginaActual - 1) * POR_PAGINA;
 
@@ -94,6 +99,11 @@ export default async function AdminHistoriasPage({
 
   return (
     <main className="max-w-325 mx-auto px-8 py-16">
+      {deleteError && (
+        <p className="font-mono text-xs text-blood border border-blood rounded px-3 py-2 mb-6">
+          {deleteError}
+        </p>
+      )}
       <div className="flex items-center justify-between mb-8">
         <div>
           <Link href="/admin" className="font-mono text-xs text-bone-dim hover:text-amber">← cola de moderación</Link>

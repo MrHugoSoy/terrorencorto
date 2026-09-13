@@ -34,8 +34,13 @@ async function eliminarHistoria(formData: FormData) {
     .from("stories")
     .delete({ count: "exact" })
     .eq("id", formData.get("id") as string);
-  if (error) throw new Error(`Error al eliminar: ${error.message}`);
-  if (!count) throw new Error("No se eliminó ninguna historia (revisa la política de DELETE en Supabase).");
+
+  if (error) {
+    redirect(`/admin?error=${encodeURIComponent(`Error al eliminar: ${error.message}`)}`);
+  }
+  if (!count) {
+    redirect(`/admin?error=${encodeURIComponent("No se eliminó ninguna historia. Revisa la política de DELETE en Supabase (public.stories).")}`);
+  }
   revalidatePath("/admin");
   revalidatePath("/");
   revalidatePath("/archivo");
@@ -121,7 +126,12 @@ function StoryCard({ story, action, deleteAction }: {
   );
 }
 
-export default async function AdminPage() {
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error: deleteError } = await searchParams;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
@@ -143,6 +153,11 @@ export default async function AdminPage() {
 
   return (
     <main className="max-w-325 mx-auto px-8 py-16">
+      {deleteError && (
+        <p className="font-mono text-xs text-blood border border-blood rounded px-3 py-2 mb-6">
+          {deleteError}
+        </p>
+      )}
       <div className="flex items-center justify-between mb-2">
         <h1 className="font-display text-2xl">Cola de moderación</h1>
         <Link
