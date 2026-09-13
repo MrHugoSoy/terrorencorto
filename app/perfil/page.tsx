@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import AvatarUpload from "@/components/AvatarUpload";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Mi expediente",
+  robots: { index: false, follow: false },
+};
 
 const STATUS_LABEL: Record<string, { texto: string; clase: string }> = {
   pendiente:         { texto: "En revisión",             clase: "text-bone-dim border-border-dark" },

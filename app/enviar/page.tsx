@@ -1,7 +1,14 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { verifyTurnstile } from "@/lib/turnstile";
 import EnviarForm from "./EnviarForm";
+
+export const metadata: Metadata = {
+  title: "Comparte tu historia",
+  description: "¿Tienes una historia de terror real, una leyenda urbana o un encuentro sin explicación? Archívala en Terror en Corto.",
+  alternates: { canonical: "https://terrorencorto.com/enviar" },
+};
 
 async function enviarHistoria(formData: FormData) {
   "use server";

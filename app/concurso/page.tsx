@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getYouTubeTitle } from "@/lib/youtube";
@@ -7,6 +8,12 @@ import LiveVoteFeed from "@/components/LiveVoteFeed";
 import VideoCard from "@/components/VideoCard";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Concurso de cortometrajes",
+  description: "Vota por tu corto de terror favorito y revisa los ganadores de años anteriores del concurso de Terror en Corto.",
+  alternates: { canonical: "https://terrorencorto.com/concurso" },
+};
 
 export default async function ConcursoPage() {
   const supabase = await createClient();

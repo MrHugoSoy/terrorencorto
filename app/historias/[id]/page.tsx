@@ -66,8 +66,21 @@ export default async function HistoriaPage({
       ? `Testigo anónimo #${String(story.anon_id).padStart(4, "0")}`
       : `@${profile?.username ?? "anonimo"}`;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: story.title,
+    articleBody: story.content,
+    datePublished: story.created_at,
+    author: { "@type": "Person", name: story.mode === "incognito" ? "Testigo anónimo" : autor },
+    publisher: { "@type": "Organization", name: "Terror en Corto" },
+    mainEntityOfPage: `${DOMAIN}/historias/${story.id}`,
+  };
+
   return (
     <main className="max-w-2xl mx-auto px-8 py-16">
+      {/* eslint-disable-next-line react/no-danger */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Link href="/" className="font-mono text-xs text-bone-dim hover:text-amber">
         ← volver al archivo
       </Link>

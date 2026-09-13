@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "@/components/LogoutButton";
@@ -9,8 +10,18 @@ import Avatar from "@/components/Avatar";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://terrorencorto.com"),
-  title: "Terror en Corto",
+  title: {
+    default: "Terror en Corto",
+    template: "%s · Terror en Corto",
+  },
   description: "Archivo de testimonios reales, leyendas urbanas y encuentros sin explicación.",
+  openGraph: {
+    siteName: "Terror en Corto",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default async function RootLayout({
@@ -26,6 +37,15 @@ export default async function RootLayout({
     : { data: null };
   const isAdmin = !!profile?.is_admin;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Terror en Corto",
+    url: "https://terrorencorto.com",
+    description: "Archivo de testimonios reales, leyendas urbanas y encuentros sin explicación.",
+    sameAs: ["https://www.youtube.com/@terrorencorto"],
+  };
+
   return (
     <html lang="es">
       <head>
@@ -35,6 +55,8 @@ export default async function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap"
           rel="stylesheet"
         />
+        {/* eslint-disable-next-line react/no-danger */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </head>
       <body>
         <div className="grain" />
@@ -83,6 +105,7 @@ export default async function RootLayout({
             © Terror en Corto. Algunas historias pueden ser narradas en el canal de YouTube @terrorencorto con autorización del autor.
           </div>
         </footer>
+        <Analytics />
       </body>
     </html>
   );

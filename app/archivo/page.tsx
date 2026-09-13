@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import ShareButtons from "@/components/ShareButtons";
 import Avatar from "@/components/Avatar";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Archivo de historias",
+  description: "Todos los testimonios reales, leyendas urbanas y encuentros sin explicación publicados en Terror en Corto.",
+  alternates: { canonical: "https://terrorencorto.com/archivo" },
+};
 
 const CATEGORIES: { value: string; label: string }[] = [
   { value: "testimonio_real", label: "Testimonio real" },

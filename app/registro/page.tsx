@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { verifyTurnstile } from "@/lib/turnstile";
 import Turnstile from "@/components/Turnstile";
+
+export const metadata: Metadata = {
+  title: "Crear cuenta",
+  robots: { index: false, follow: true },
+};
 
 async function registro(formData: FormData) {
   "use server";
