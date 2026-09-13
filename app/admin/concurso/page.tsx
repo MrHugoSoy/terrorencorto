@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import DeleteContestButton from "./DeleteContestButton";
+import DeleteEntryButton from "./DeleteEntryButton";
 
 export const dynamic = "force-dynamic";
 
@@ -81,11 +82,30 @@ async function agregarEntrada(formData: FormData) {
   revalidatePath("/admin/concurso");
 }
 
+async function editarEntrada(formData: FormData) {
+  "use server";
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("contest_entries")
+    .update({
+      title: formData.get("title") as string,
+      youtube_url: formData.get("youtube_url") as string,
+      description: (formData.get("description") as string) || null,
+    })
+    .eq("id", formData.get("id") as string);
+  if (error) throw new Error(`Error al guardar: ${error.message}`);
+  revalidatePath("/admin/concurso");
+  revalidatePath("/concurso");
+  revalidatePath("/");
+}
+
 async function eliminarEntrada(formData: FormData) {
   "use server";
   const supabase = await createClient();
   await supabase.from("contest_entries").delete().eq("id", formData.get("id") as string);
   revalidatePath("/admin/concurso");
+  revalidatePath("/concurso");
+  revalidatePath("/");
 }
 
 async function marcarGanador(formData: FormData) {
@@ -260,18 +280,46 @@ export default async function AdminConcursoPage() {
                       (resultsByContest.get(contest.id)?.get(b.id) ?? 0) - (resultsByContest.get(contest.id)?.get(a.id) ?? 0)
                     )
                     .map((entry: { id: string; title: string; youtube_url: string; description?: string }) => (
-                    <div key={entry.id} className="flex items-center justify-between gap-3 border border-border-dark rounded px-4 py-3">
+                    <form
+                      key={entry.id}
+                      action={editarEntrada}
+                      className="border border-border-dark rounded p-3 flex flex-col gap-2"
+                    >
+                      <input type="hidden" name="id" value={entry.id} />
                       <div className="flex items-center gap-3">
-                        <span className="font-semibold text-sm">{entry.title}</span>
-                        <span className="font-mono text-xs text-amber border border-amber/50 rounded px-2 py-0.5">
+                        <input
+                          name="title"
+                          defaultValue={entry.title}
+                          required
+                          className="flex-1 bg-void border border-border-dark rounded px-3 py-2 text-sm font-semibold"
+                        />
+                        <span className="font-mono text-xs text-amber border border-amber/50 rounded px-2 py-0.5 shrink-0">
                           {resultsByContest.get(contest.id)?.get(entry.id) ?? 0} votos
                         </span>
                       </div>
-                      <form action={eliminarEntrada}>
-                        <input type="hidden" name="id" value={entry.id} />
-                        <button type="submit" className="font-mono text-xs text-blood hover:text-bone">Eliminar</button>
-                      </form>
-                    </div>
+                      <input
+                        name="youtube_url"
+                        type="url"
+                        defaultValue={entry.youtube_url}
+                        required
+                        className="bg-void border border-border-dark rounded px-3 py-2 text-xs font-mono"
+                      />
+                      <input
+                        name="description"
+                        defaultValue={entry.description ?? ""}
+                        placeholder="Descripción breve (opcional)"
+                        className="bg-void border border-border-dark rounded px-3 py-2 text-xs"
+                      />
+                      <div className="flex justify-end gap-2">
+                        <button
+                          type="submit"
+                          className="font-mono text-xs uppercase tracking-wide border border-amber text-amber rounded px-3 py-2 hover:bg-amber hover:text-void"
+                        >
+                          Guardar
+                        </button>
+                        <DeleteEntryButton action={eliminarEntrada} />
+                      </div>
+                    </form>
                   ))}
                 </div>
 
