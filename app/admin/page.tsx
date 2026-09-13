@@ -120,7 +120,7 @@ function StoryCard({ story, action, deleteAction }: {
         >
           Guardar
         </button>
-        <DeleteStoryButton action={deleteAction} id={story.id} />
+        <DeleteStoryButton action={deleteAction} />
       </div>
     </form>
   );

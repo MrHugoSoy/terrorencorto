@@ -234,7 +234,7 @@ export default async function AdminHistoriasPage({
               >
                 Guardar
               </button>
-              <DeleteStoryButton action={eliminarHistoria} id={story.id} />
+              <DeleteStoryButton action={eliminarHistoria} />
             </div>
           </form>
         ))}
