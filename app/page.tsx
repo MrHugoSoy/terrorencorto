@@ -22,6 +22,10 @@ const STATUS_OVERRIDE: Record<string, { texto: string; clase: string }> = {
   usado_canal:        { texto: "narrado en canal", clase: "stamp-amber" },
 };
 
+function haceUnaSemana() {
+  return new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+}
+
 export default async function Home() {
   const supabase = await createClient();
 
@@ -60,11 +64,10 @@ export default async function Home() {
     .select("id", { count: "exact", head: true })
     .in("status", ["publicado", "seleccionado_canal", "usado_canal"]);
 
-  const semanaAtras = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const { count: enviadasSemana } = await supabase
     .from("stories")
     .select("id", { count: "exact", head: true })
-    .gte("created_at", semanaAtras);
+    .gte("created_at", haceUnaSemana());
 
   const { data: pageViews } = await supabase.rpc("increment_page_views");
 

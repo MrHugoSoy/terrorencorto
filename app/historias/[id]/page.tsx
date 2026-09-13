@@ -79,7 +79,6 @@ export default async function HistoriaPage({
 
   return (
     <main className="max-w-2xl mx-auto px-8 py-16">
-      {/* eslint-disable-next-line react/no-danger */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Link href="/" className="font-mono text-xs text-bone-dim hover:text-amber">
         ← volver al archivo

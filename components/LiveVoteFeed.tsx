@@ -23,10 +23,14 @@ export default function LiveVoteFeed({
   className?: string;
 }) {
   const [feed, setFeed] = useState(initialFeed);
+  const [prevInitialFeed, setPrevInitialFeed] = useState(initialFeed);
+
+  if (initialFeed !== prevInitialFeed) {
+    setPrevInitialFeed(initialFeed);
+    setFeed(initialFeed);
+  }
 
   useEffect(() => {
-    setFeed(initialFeed);
-
     const supabase = createClient();
     const channel = supabase
       .channel(`contest-vote-feed-${contestId}`)
@@ -43,7 +47,7 @@ export default function LiveVoteFeed({
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [contestId, initialFeed]);
+  }, [contestId]);
 
   return (
     <div className={`shrink-0 border border-border-dark rounded flex flex-col bg-void/90 backdrop-blur-sm ${className}`}>

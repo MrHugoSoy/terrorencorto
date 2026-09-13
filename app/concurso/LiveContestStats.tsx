@@ -13,10 +13,14 @@ export default function LiveContestStats({
   initialVotes: number;
 }) {
   const [votes, setVotes] = useState(initialVotes);
+  const [prevInitialVotes, setPrevInitialVotes] = useState(initialVotes);
+
+  if (initialVotes !== prevInitialVotes) {
+    setPrevInitialVotes(initialVotes);
+    setVotes(initialVotes);
+  }
 
   useEffect(() => {
-    setVotes(initialVotes);
-
     const supabase = createClient();
     const channel = supabase
       .channel(`contest-votes-${contestId}`)
@@ -30,7 +34,7 @@ export default function LiveContestStats({
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [contestId, initialVotes]);
+  }, [contestId]);
 
   return (
     <>
