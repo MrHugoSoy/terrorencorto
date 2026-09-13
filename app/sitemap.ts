@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 
 const DOMAIN = "https://terrorencorto.com";
 
-const STATIC_ROUTES = ["", "/archivo", "/concurso", "/videos", "/enviar"];
+const STATIC_ROUTES = ["", "/archivo", "/concurso", "/videos", "/enviar", "/privacidad"];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createClient();

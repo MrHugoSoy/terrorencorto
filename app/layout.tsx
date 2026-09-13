@@ -103,6 +103,10 @@ export default async function RootLayout({
             ADVERTENCIA: el contenido de este archivo no ha sido verificado por ninguna autoridad. Léase bajo su propio riesgo.
             <br />
             © Terror en Corto. Algunas historias pueden ser narradas en el canal de YouTube @terrorencorto con autorización del autor.
+            <br />
+            <Link href="/privacidad" className="hover:text-amber underline underline-offset-2">
+              Aviso de privacidad
+            </Link>
           </div>
         </footer>
         {process.env.NEXT_PUBLIC_GA_ID && <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />}

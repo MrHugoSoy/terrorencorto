@@ -22,6 +22,17 @@ async function enviarHistoria(formData: FormData) {
     redirect(`/enviar?error=${encodeURIComponent("No pudimos verificar que eres humano. Intenta de nuevo.")}`);
   }
 
+  const unDiaAtras = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const { count: enviosRecientes } = await supabase
+    .from("stories")
+    .select("id", { count: "exact", head: true })
+    .eq("author_id", user.id)
+    .gte("created_at", unDiaAtras);
+
+  if ((enviosRecientes ?? 0) >= 3) {
+    redirect(`/enviar?error=${encodeURIComponent("Ya enviaste el máximo de 3 historias por hoy. Vuelve mañana.")}`);
+  }
+
   const mode = formData.get("mode") as string;
   const channelConsent = formData.get("channel_consent") === "on";
 
